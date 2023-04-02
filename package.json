@@ -1,0 +1,20 @@
+{
+  "author": "ivan.podgornov@live.com",
+  "name": "colibri",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "panel:start": "npm start --workspace @colibri/panel",
+    "promo:build": "npm run build --workspace @colibri/promo",
+    "promo:start": "npm start --workspace @colibri/promo"
+  },
+  "dependencies": {
+    "@colibri/components": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "typescript": "^5.0.3"
+  }
+}
