@@ -2,13 +2,15 @@
   "author": "ivan.podgornov@live.com",
   "name": "colibri",
   "private": true,
+  "engines": {
+    "node": "^18.12.1"
+  },
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
     "panel:start": "npm start --workspace @colibri/panel",
-    "promo:build": "npm run build --workspace @colibri/promo",
-    "promo:start": "npm start --workspace @colibri/promo"
+    "components:start": "npm start --workspace @colibri/components"
   },
   "dependencies": {
     "@colibri/components": "*"

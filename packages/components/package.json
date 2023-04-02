@@ -1,11 +1,10 @@
 {
-  "name": "@colibri/promo",
-  "main": "./promo.tsx",
+  "name": "@colibri/components",
+  "main": "./src/index.ts",
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "build": "webpack",
-    "start": "serve ./dist/ -p 3001"
+    "start": "webpack && serve ./dist/ -p 3001"
   },
   "dependencies": {
     "react": "^18.2.0"

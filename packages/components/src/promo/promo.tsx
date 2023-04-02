@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
+import React from 'react';
 
-export interface PromoProps {
+interface Props {
   greetings: string;
 }
 
-const Promo: FC<PromoProps> = (props) => {
+export function Promo(props: Props) {
   const { greetings } = props;
 
   return (
@@ -13,5 +13,3 @@ const Promo: FC<PromoProps> = (props) => {
     </div>
   );
 };
-
-export default Promo;

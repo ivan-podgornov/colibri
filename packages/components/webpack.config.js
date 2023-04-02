@@ -5,10 +5,11 @@ module.exports = {
   mode: 'production',
 
   entry: {
-    promo: path.resolve(__dirname, './promo.tsx'),
+    main: path.resolve(__dirname, './src/index.ts'),
   },
 
   output: {
+    clean: true,
     filename: '[name].js',
     path: path.resolve(__dirname, './dist/'),
   },
@@ -29,10 +30,11 @@ module.exports = {
 
   plugins: [
     new ModuleFederationPlugin({
-      name: 'Promo',
+      name: 'colibri_components',
       filename: 'remoteEntry.js',
       exposes: {
-        './component': './promo.tsx',
+        Promo: './src/promo',
+        User: './src/user',
       },
       shared: {
         react: {
