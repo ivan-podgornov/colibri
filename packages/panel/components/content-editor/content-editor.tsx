@@ -11,7 +11,7 @@ interface Props {
 export function ContentEditor(props: Props) {
   const { content, onChange } = props;
 
-  const [isAdding, setIsAdding] = useState(true);
+  const [isAdding, setIsAdding] = useState(false);
 
   const create = (props: any) => {
     onChange([...content, props]);

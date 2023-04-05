@@ -1,7 +1,6 @@
 import React, { useMemo, ComponentType } from 'react';
 import type { ValidationMap, Validator } from 'prop-types';
 import { PropEditor } from '../props-editor/prop-editor';
-import styles from './props-editor.module.css';
 
 type Props<T> = {
   Component: ComponentType<T>;
@@ -25,7 +24,7 @@ export function PropsEditor<T>(props: Props<T>): JSX.Element {
   };
 
   return (
-    <fieldset className={styles.props}>
+    <div>
       {Object.entries(propTypes).map(([propName, validator]) => (
         <PropEditor
           key={propName}
@@ -37,6 +36,6 @@ export function PropsEditor<T>(props: Props<T>): JSX.Element {
           onChange={getChangeHandler(propName)}
         />
       ))}
-    </fieldset>
+    </div>
   );
 }
