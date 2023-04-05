@@ -1,4 +1,5 @@
 import React, { useEffect, useState, FC } from 'react';
+import PropTypes from 'prop-types';
 
 export interface Props<T> {
   /** Название удалённого компонента. В модуле должен быть именованный экспорт с таким именем */
@@ -40,7 +41,7 @@ export async function loadComponent<T>(props: Props<T>) {
   return factory()[componentName];
 }
 
-export function RemoteComponent<T>(props: Props<T>) {
+export function RemoteComponent<T>(props: Props<T>): JSX.Element {
   const { componentProps } = props;
   const [Component, setComponent] = useState<null | FC<any>>(null);
 
@@ -50,7 +51,14 @@ export function RemoteComponent<T>(props: Props<T>) {
     });
   }, [loadComponent]);
 
-  return (Component !== null) && <Component {...componentProps} />
+  return Component === null ? <></> : <Component {...componentProps} />
+}
+
+RemoteComponent.propTypes = {
+  componentName: PropTypes.string.isRequired,
+  componentProps: PropTypes.object.isRequired,
+  moduleName: PropTypes.string.isRequired,
+  src: PropTypes.string.isRequired,
 }
 
 export default RemoteComponent;

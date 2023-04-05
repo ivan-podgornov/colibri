@@ -1,0 +1,14 @@
+.page {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  column-gap: 32px;
+  min-height: calc(100vh - 16px);
+}
+
+.page * {
+  box-sizing: border-box;
+}
+
+.content {
+  border-right: 1px solid black;
+}
