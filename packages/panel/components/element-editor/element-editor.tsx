@@ -2,13 +2,15 @@ import React, { useEffect, useMemo, useState, ComponentType } from 'react';
 import type { ValidationMap, Validator } from 'prop-types';
 import { loadComponent, Props as RemoteComponentProps } from '../remote-component';
 import { PropEditor } from './prop-editor';
+import styles from './element-editor.module.css';
 
 type Props<T> = RemoteComponentProps<T> & {
   onChange: (value: T) => void;
+  onRemove: () => void;
 };
 
 export function ElementEditor<T>(props: Props<T>): JSX.Element {
-  const { onChange, componentName, componentProps } = props;
+  const { onChange, onRemove, componentName, componentProps } = props;
   const [Component, setComponent] = useState<null | ComponentType<any>>(null);
 
   useEffect(() => {
@@ -26,8 +28,9 @@ export function ElementEditor<T>(props: Props<T>): JSX.Element {
   };
 
   return (
-    <fieldset style={{ marginBottom: 32, maxWidth: 500 }}>
+    <fieldset className={styles.props} style={{ marginBottom: 32, maxWidth: 500 }}>
       <legend>{componentName}</legend>
+      <button className={styles.remove} type="button" onClick={onRemove}>x</button>
       {Object.entries(propTypes).map(([propName, validator]) => (
         <PropEditor
           key={propName}

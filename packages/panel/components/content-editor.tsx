@@ -15,9 +15,22 @@ export function ContentEditor(props: Props) {
     onChange(copy);
   };
 
+  const getRemoveHandler = (index: number) => () => {
+    const copy = [...content];
+    copy.splice(index, 1);
+    onChange(copy);
+  };
+
   return (
     <>
-      {content.map((element, i) => <ElementEditor key={i} {...element} onChange={getChangeHandler(i)} />)}
+      {content.map((element, i) => (
+        <ElementEditor
+          key={i}
+          {...element}
+          onChange={getChangeHandler(i)}
+          onRemove={getRemoveHandler(i)}
+        />
+      ))}
     </>
   );
 }
