@@ -1,5 +1,6 @@
 import React from 'react';
-import { ElementEditor } from '../components/element-editor';
+import { ElementEditor } from '../element-editor';
+import styles from './content-editor.module.css';
 
 interface Props {
   content: any[];
@@ -22,15 +23,16 @@ export function ContentEditor(props: Props) {
   };
 
   return (
-    <>
+    <ul className={styles.content}>
       {content.map((element, i) => (
-        <ElementEditor
-          key={i}
-          {...element}
-          onChange={getChangeHandler(i)}
-          onRemove={getRemoveHandler(i)}
-        />
+        <li key={i} className={styles.element}>
+          <ElementEditor
+            {...element}
+            onChange={getChangeHandler(i)}
+            onRemove={getRemoveHandler(i)}
+          />
+        </li>
       ))}
-    </>
+    </ul>
   );
 }

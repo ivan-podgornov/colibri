@@ -1,5 +1,6 @@
 .props {
   position: relative;
+  max-width: 500px;
 }
 
 .remove {

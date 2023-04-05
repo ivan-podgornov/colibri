@@ -28,7 +28,7 @@ export function ElementEditor<T>(props: Props<T>): JSX.Element {
   };
 
   return (
-    <fieldset className={styles.props} style={{ marginBottom: 32, maxWidth: 500 }}>
+    <fieldset className={styles.props}>
       <legend>{componentName}</legend>
       <button className={styles.remove} type="button" onClick={onRemove}>x</button>
       {Object.entries(propTypes).map(([propName, validator]) => (
