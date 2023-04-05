@@ -1,15 +1,21 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 interface Props {
+  age: number;
   firstName: string;
   surname: string;
 }
 
 export function User(props: Props) {
-  const { firstName, surname } = props;
+  const { age, firstName, surname } = props;
 
   return (
     <dl>
+      <div>
+        <dt>Age:</dt>
+        <dd>{age}</dd>
+      </div>
       <div>
         <dt>First name:</dt>
         <dd>{firstName}</dd>
@@ -21,3 +27,9 @@ export function User(props: Props) {
     </dl>
   )
 }
+
+User.propTypes = {
+  age: PropTypes.number.isRequired,
+  firstName: PropTypes.string.isRequired,
+  surname: PropTypes.string.isRequired,
+};

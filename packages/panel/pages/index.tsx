@@ -20,6 +20,7 @@ export default function PageIndex() {
       componentProps: {
         firstName: 'Peet',
         surname: 'Peeterson',
+        age: 10,
       },
       moduleName: 'colibri_components',
       src: 'http://localhost:3001/remoteEntry.js',
@@ -28,7 +29,7 @@ export default function PageIndex() {
 
   return (
     <div>
-      <ContentEditor defaultContent={content} onChange={setContent} />
+      <ContentEditor content={content} onChange={setContent} />
       {content.map((item, i) => <RemoteComponent key={i} {...item} />)}
     </div>
   );

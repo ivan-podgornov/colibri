@@ -1,39 +1,23 @@
-import React, { useCallback, useEffect, useState, ChangeEvent, FormEvent } from 'react';
+import React from 'react';
+import { ElementEditor } from '../components/element-editor';
 
 interface Props {
-  defaultContent: any[];
-
+  content: any[];
   onChange: (content: any[]) => void;
 }
 
 export function ContentEditor(props: Props) {
-  const { defaultContent, onChange } = props;
+  const { content, onChange } = props;
 
-  const [content, setContent] = useState(JSON.stringify(defaultContent, null, 2));
-
-  useEffect(() => {
-    setContent(JSON.stringify(defaultContent, null, 2));
-  }, [defaultContent]);
-
-  const contentChangeHandler = useCallback((event: ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(event.target.value);
-  }, []);
-
-  const contentReadyHandler = useCallback((event: FormEvent) => {
-    event.preventDefault();
-    const parsedContent = JSON.parse(content);
-    onChange(parsedContent);
-  }, [content, onChange]);
+  const getChangeHandler = (index: number) => (value: any) => {
+    const copy = [...content];
+    copy.splice(index, 1, { ...content[index], componentProps: value });
+    onChange(copy);
+  };
 
   return (
-    <form onSubmit={contentReadyHandler}>
-      <textarea
-        style={{ display: 'block', width: 800 }}
-        rows={20}
-        value={content}
-        onChange={contentChangeHandler}
-      />
-      <button>Ready</button>
-    </form>
+    <>
+      {content.map((element, i) => <ElementEditor key={i} {...element} onChange={getChangeHandler(i)} />)}
+    </>
   );
 }

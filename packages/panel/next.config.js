@@ -10,6 +10,14 @@ const nextConfig = {
     config.plugins.push(new ModuleFederationPlugin({
       name: 'panel',
       shared: {
+        'prop-types': {
+          eager: true,
+          requiredVersion: '^15',
+          import: 'prop-types',
+          shareKey: 'prop-types',
+          shareScope: 'default',
+          singleton: true,
+        },
         react: {
           eager: true,
           import: 'react',

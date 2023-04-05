@@ -37,6 +37,13 @@ module.exports = {
         User: './src/user',
       },
       shared: {
+        'prop-types': {
+          requiredVersion: '^15',
+          import: 'prop-types',
+          shareKey: 'prop-types',
+          shareScope: 'default',
+          singleton: true,
+        },
         react: {
           requiredVersion: '^18',
           import: 'react',

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { FC } from 'react';
+import PropTypes from 'prop-types';
 
 interface Props {
   greetings: string;
 }
 
-export function Promo(props: Props) {
+export const Promo: FC<Props> = (props: Props) => {
   const { greetings } = props;
 
   return (
@@ -12,4 +13,8 @@ export function Promo(props: Props) {
       <h1>{greetings}</h1>
     </div>
   );
+};
+
+Promo.propTypes = {
+  greetings: PropTypes.string.isRequired,
 };
