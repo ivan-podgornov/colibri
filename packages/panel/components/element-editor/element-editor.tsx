@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState, ComponentType } from 'react';
 import type { ValidationMap, Validator } from 'prop-types';
 import { loadComponent, Props as RemoteComponentProps } from '../remote-component';
-import { PropEditor } from './prop-editor';
+import { PropEditor } from '../props-editor/prop-editor';
 import styles from './element-editor.module.css';
 
 type Props<T> = RemoteComponentProps<T> & {
