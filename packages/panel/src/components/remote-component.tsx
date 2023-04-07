@@ -29,13 +29,13 @@ export async function loadComponent<T>(props: Props<T>) {
 
   await __webpack_init_sharing__('default');
 
-  // @ts-ignore
+  // @ts-expect-error - fix this later
   const container = window[moduleName];
 
-  // @ts-ignore
+  // @ts-expect-error - fix this later
   await container.init(__webpack_share_scopes__.default);
 
-  // @ts-ignore
+  // @ts-expect-error - fix this later
   const factory = await window[moduleName].get(componentName);
 
   return factory()[componentName];
@@ -51,7 +51,7 @@ export function RemoteComponent<T>(props: Props<T>): JSX.Element {
     });
   }, [loadComponent]);
 
-  return Component === null ? <></> : <Component {...componentProps} />
+  return Component === null ? <></> : <Component {...componentProps} />;
 }
 
 RemoteComponent.propTypes = {
@@ -59,6 +59,4 @@ RemoteComponent.propTypes = {
   componentProps: PropTypes.object.isRequired,
   moduleName: PropTypes.string.isRequired,
   src: PropTypes.string.isRequired,
-}
-
-export default RemoteComponent;
+};

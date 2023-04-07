@@ -25,7 +25,7 @@ export function User(props: Props) {
         <dd>{surname}</dd>
       </div>
     </dl>
-  )
+  );
 }
 
 User.propTypes = {

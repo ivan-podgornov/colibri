@@ -19,9 +19,12 @@ export function PropEditor<T extends ValidatorData>(props: Props<T>) {
     const value = event.target.value;
 
     switch (validatorType) {
-      case 'string': return onChange(value as T);
-      case 'number': return onChange(Number(value) as T);
-      case 'unknown': return onChange(value as T);
+      case 'string':
+        return onChange(value as T);
+      case 'number':
+        return onChange(Number(value) as T);
+      case 'unknown':
+        return onChange(value as T);
     }
   };
 
