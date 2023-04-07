@@ -1,7 +1,10 @@
 {
-  "author": "ivan.podgornov@live.com",
   "name": "colibri",
   "private": true,
+  "author": {
+    "name": "Ivan Podgornov",
+    "email": "ivan.podgornov@live.com"
+  },
   "engines": {
     "node": "^18.12.1"
   },
@@ -9,11 +12,13 @@
     "packages/*"
   ],
   "scripts": {
+    "lint:editorconfig": "editorconfig-checker",
     "panel:start": "npm start --workspace @colibri/panel",
     "components:start": "npm start --workspace @colibri/components"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
+    "editorconfig-checker": "^5.0.1",
     "typescript": "^5.0.3"
   }
 }
