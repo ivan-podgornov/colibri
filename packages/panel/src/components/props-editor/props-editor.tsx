@@ -33,13 +33,9 @@ export function PropsEditor<T>(props: Props<T>): JSX.Element {
           key={propName}
           propName={propName}
           validator={validator as Validator<string>}
-          // Fix this later
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
+          // @ts-expect-error - fix this later
           value={componentProps[propName]}
-          // Fix this later
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
+          // @ts-expect-error - fix this later
           onChange={getChangeHandler(propName)}
         />
       ))}

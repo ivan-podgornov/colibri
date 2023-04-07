@@ -29,19 +29,13 @@ export async function loadComponent<T>(props: Props<T>) {
 
   await __webpack_init_sharing__('default');
 
-  // fix this later
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
+  // @ts-expect-error - fix this later
   const container = window[moduleName];
 
-  // fix this later
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
+  // @ts-expect-error - fix this later
   await container.init(__webpack_share_scopes__.default);
 
-  // fix this later
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
+  // @ts-expect-error - fix this later
   const factory = await window[moduleName].get(componentName);
 
   return factory()[componentName];
