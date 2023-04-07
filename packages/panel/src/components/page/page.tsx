@@ -7,9 +7,12 @@ export function Page() {
   // Fix this later
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const RemoteComponent = dynamic(() => import('../remote-component').then((mod) => mod.RemoteComponent), {
-    ssr: false,
-  });
+  const RemoteComponent = dynamic(
+    () => import('../remote-component').then((mod) => mod.RemoteComponent),
+    {
+      ssr: false,
+    }
+  );
 
   const [content, setContent] = useState<any[]>([]);
 
@@ -27,7 +30,9 @@ export function Page() {
   return (
     <div className={styles.page}>
       <div className={styles.content}>
-        {content.map((item, i) => <RemoteComponent key={i} {...item} />)}
+        {content.map((item, i) => (
+          <RemoteComponent key={i} {...item} />
+        ))}
       </div>
       <ContentEditor content={content} onChange={changeContentHandler} />
     </div>

@@ -1,6 +1,7 @@
 {
   "env": {
     "es2021": true,
+    "jest/globals": true,
     "node": true
   },
   "extends": [
@@ -13,6 +14,7 @@
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
+    "project": "./tsconfig.json",
     "sourceType": "module"
   },
   "settings": {
@@ -21,15 +23,22 @@
     }
   },
   "rules": {
-    "import/no-default-export": "error"
+    "import/no-default-export": "error",
+    // Because proptypes are more convenient to import as default
+    "import/no-named-as-default-member": "off"
   },
   "overrides": [
     {
-      "files": ["./packages/panel/src/pages/**/*"],
+      "files": ["./packages/panel/src/pages/**/*", "jest.config.ts"],
       "rules": {
-        // Because next pages must be exported as default
+        // Because next pages and ts-jest config must be exported as default
         "import/no-default-export": "off"
       }
+    },
+    {
+      "files": ["*.spec.ts"],
+      "plugins": ["jest"],
+      "extends": ["plugin:jest/all"]
     }
   ]
 }

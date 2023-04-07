@@ -1,5 +1,8 @@
 import React, { useEffect, useState, ComponentType } from 'react';
-import { loadComponent, Props as RemoteComponentProps } from '../remote-component';
+import {
+  loadComponent,
+  Props as RemoteComponentProps,
+} from '../remote-component';
 import { PropsEditor } from '../props-editor';
 import styles from './element-editor.module.css';
 
@@ -21,7 +24,9 @@ export function ElementEditor<T>(props: Props<T>): JSX.Element {
   return (
     <fieldset className={styles.props}>
       <legend>{componentName}</legend>
-      <button className={styles.remove} type="button" onClick={onRemove}>x</button>
+      <button className={styles.remove} type="button" onClick={onRemove}>
+        x
+      </button>
       {Component !== null && (
         <PropsEditor
           Component={Component}

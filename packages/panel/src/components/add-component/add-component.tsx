@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { PropsEditor, getDefaultProps } from "../props-editor";
+import React, { useEffect, useRef, useState } from 'react';
+import { PropsEditor, getDefaultProps } from '../props-editor';
 import {
   RemoteComponent,
   loadComponent,
   Props as RemoteComponentProps,
-} from "../remote-component";
-import styles from "./add-component.module.css";
+} from '../remote-component';
+import styles from './add-component.module.css';
 
 interface Props {
   open: boolean;
@@ -56,7 +56,7 @@ export function AddComponent(props: Props) {
       <PropsEditor
         Component={RemoteComponent}
         componentProps={remoteComponentData}
-        omit={["componentProps"]}
+        omit={['componentProps']}
         onChange={setRemoteComponentData}
       />
       <button type="button" onClick={doneHandler}>

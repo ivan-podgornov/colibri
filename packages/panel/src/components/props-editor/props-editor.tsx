@@ -4,8 +4,8 @@ import { PropEditor } from '../props-editor/prop-editor';
 
 type Props<T> = {
   Component: ComponentType<T>;
-  componentProps: T,
-  omit?: Array<keyof T>,
+  componentProps: T;
+  omit?: Array<keyof T>;
   onChange: (componentProps: T) => void;
 };
 
@@ -14,14 +14,17 @@ export function PropsEditor<T>(props: Props<T>): JSX.Element {
 
   const propTypes = useMemo((): ValidationMap<T> => {
     const propTypes = (Component.propTypes || {}) as ValidationMap<T>;
-    const filteredEntries = (Object.entries(propTypes) as [keyof T, unknown][])
-      .filter(([key]) => !omit.includes(key))
+    const filteredEntries = (
+      Object.entries(propTypes) as [keyof T, unknown][]
+    ).filter(([key]) => !omit.includes(key));
     return Object.fromEntries(filteredEntries) as ValidationMap<T>;
   }, [Component]);
 
-  const getChangeHandler = <K extends keyof T>(propName: K) => (value: T[K]) => {
-    onChange({ ...props.componentProps, [propName]: value })
-  };
+  const getChangeHandler =
+    <K extends keyof T>(propName: K) =>
+    (value: T[K]) => {
+      onChange({ ...props.componentProps, [propName]: value });
+    };
 
   return (
     <div>
@@ -30,8 +33,12 @@ export function PropsEditor<T>(props: Props<T>): JSX.Element {
           key={propName}
           propName={propName}
           validator={validator as Validator<string>}
+          // Fix this later
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           value={componentProps[propName]}
+          // Fix this later
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           onChange={getChangeHandler(propName)}
         />
