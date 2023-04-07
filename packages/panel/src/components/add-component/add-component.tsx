@@ -1,7 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { PropsEditor, getDefaultProps } from '../props-editor';
-import { RemoteComponent, loadComponent, Props as RemoteComponentProps } from '../remote-component';
-import styles from './add-component.module.css';
+import React, { useEffect, useRef, useState } from "react";
+import { PropsEditor, getDefaultProps } from "../props-editor";
+import {
+  RemoteComponent,
+  loadComponent,
+  Props as RemoteComponentProps,
+} from "../remote-component";
+import styles from "./add-component.module.css";
 
 interface Props {
   open: boolean;
@@ -13,7 +17,9 @@ export function AddComponent(props: Props) {
   const { open, onClose, onCreated } = props;
   const dialogElement = useRef<HTMLDialogElement>(null);
 
-  const [remoteComponentData, setRemoteComponentData] = useState(getDefaultProps(RemoteComponent.propTypes));
+  const [remoteComponentData, setRemoteComponentData] = useState(
+    getDefaultProps(RemoteComponent.propTypes)
+  );
 
   const toggle = () => {
     if (!dialogElement.current) return;
@@ -25,9 +31,9 @@ export function AddComponent(props: Props) {
     }
 
     if (!open) {
-      dialogElement.current.close()
+      dialogElement.current.close();
     }
-  }
+  };
 
   const doneHandler = async () => {
     const Component = await loadComponent(remoteComponentData);
@@ -43,15 +49,19 @@ export function AddComponent(props: Props) {
 
   return (
     <dialog ref={dialogElement} className={styles.dialog}>
-      <button className={styles.close} onClick={onClose} type="button">x</button>
+      <button className={styles.close} onClick={onClose} type="button">
+        x
+      </button>
       <h2>Add component</h2>
       <PropsEditor
         Component={RemoteComponent}
         componentProps={remoteComponentData}
-        omit={['componentProps']}
+        omit={["componentProps"]}
         onChange={setRemoteComponentData}
       />
-      <button type="button" onClick={doneHandler}>Done</button>
+      <button type="button" onClick={doneHandler}>
+        Done
+      </button>
     </dialog>
-  )
+  );
 }

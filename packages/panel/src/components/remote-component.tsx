@@ -57,7 +57,7 @@ export function RemoteComponent<T>(props: Props<T>): JSX.Element {
     });
   }, [loadComponent]);
 
-  return Component === null ? <></> : <Component {...componentProps} />
+  return Component === null ? <></> : <Component {...componentProps} />;
 }
 
 RemoteComponent.propTypes = {
@@ -65,4 +65,4 @@ RemoteComponent.propTypes = {
   componentProps: PropTypes.object.isRequired,
   moduleName: PropTypes.string.isRequired,
   src: PropTypes.string.isRequired,
-}
+};
