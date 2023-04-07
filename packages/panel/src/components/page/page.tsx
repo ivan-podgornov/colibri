@@ -4,8 +4,10 @@ import { ContentEditor } from '../content-editor';
 import styles from './page.module.css';
 
 export function Page() {
+  // Fix this later
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const RemoteComponent = dynamic(() => import('../remote-component'), {
+  const RemoteComponent = dynamic(() => import('../remote-component').then((mod) => mod.RemoteComponent), {
     ssr: false,
   });
 

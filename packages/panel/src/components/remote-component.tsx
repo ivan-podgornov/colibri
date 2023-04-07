@@ -29,12 +29,18 @@ export async function loadComponent<T>(props: Props<T>) {
 
   await __webpack_init_sharing__('default');
 
+  // fix this later
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const container = window[moduleName];
 
+  // fix this later
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   await container.init(__webpack_share_scopes__.default);
 
+  // fix this later
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const factory = await window[moduleName].get(componentName);
 
@@ -60,5 +66,3 @@ RemoteComponent.propTypes = {
   moduleName: PropTypes.string.isRequired,
   src: PropTypes.string.isRequired,
 }
-
-export default RemoteComponent;

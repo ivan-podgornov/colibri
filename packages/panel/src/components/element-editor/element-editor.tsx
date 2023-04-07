@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useState, ComponentType } from 'react';
-import type { ValidationMap, Validator } from 'prop-types';
+import React, { useEffect, useState, ComponentType } from 'react';
 import { loadComponent, Props as RemoteComponentProps } from '../remote-component';
 import { PropsEditor } from '../props-editor';
 import styles from './element-editor.module.css';

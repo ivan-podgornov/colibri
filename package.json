@@ -1,6 +1,7 @@
 {
   "name": "colibri",
   "private": true,
+  "type": "module",
   "author": {
     "name": "Ivan Podgornov",
     "email": "ivan.podgornov@live.com"
@@ -13,12 +14,18 @@
   ],
   "scripts": {
     "lint:editorconfig": "editorconfig-checker",
+    "lint:ts": "eslint ./packages/*/src/**/*.{ts,tsx}",
     "panel:start": "npm start --workspace @colibri/panel",
     "components:start": "npm start --workspace @colibri/components"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
     "editorconfig-checker": "^5.0.1",
+    "eslint": "^8.37.0",
+    "eslint-import-resolver-typescript": "^3.5.5",
+    "eslint-plugin-import": "^2.27.5",
     "typescript": "^5.0.3"
   }
 }
