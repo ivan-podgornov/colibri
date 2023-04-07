@@ -29,9 +29,9 @@
   },
   "overrides": [
     {
-      "files": ["./packages/panel/src/pages/**/*", "jest.config.ts"],
+      "files": ["./packages/panel/src/pages/**/*", "commitlint.config.ts", "jest.config.ts"],
       "rules": {
-        // Because next pages and ts-jest config must be exported as default
+        // Because next pages, commitlint and ts-jest config must be exported as default
         "import/no-default-export": "off"
       }
     },
