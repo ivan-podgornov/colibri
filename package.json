@@ -12,9 +12,6 @@
     "panel:start": "npm start --workspace @colibri/panel",
     "components:start": "npm start --workspace @colibri/components"
   },
-  "dependencies": {
-    "@colibri/components": "*"
-  },
   "devDependencies": {
     "@types/node": "^18.15.11",
     "typescript": "^5.0.3"
