@@ -1,67 +1,84 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { PropsEditor, getDefaultProps } from '../props-editor';
-import {
-  RemoteComponent,
-  loadComponent,
-  Props as RemoteComponentProps,
-} from '../remote-component';
-import styles from './add-component.module.css';
+import React from 'react';
+import { Button, Form, Input, Space } from 'antd';
+import { RemoteComponentData } from '../remote-component';
 
 interface Props {
-  open: boolean;
-  onClose: () => void;
-  onCreated: (remoteComponentProps: RemoteComponentProps<any>) => void;
+  onAdd: (componentData: RemoteComponentData) => void;
+  onCancel: () => void;
 }
 
 export function AddComponent(props: Props) {
-  const { open, onClose, onCreated } = props;
-  const dialogElement = useRef<HTMLDialogElement>(null);
+  const { onAdd, onCancel } = props;
+  const [form] = Form.useForm<RemoteComponentData>();
 
-  const [remoteComponentData, setRemoteComponentData] = useState(
-    getDefaultProps(RemoteComponent.propTypes)
-  );
-
-  const toggle = () => {
-    if (!dialogElement.current) return;
-
-    const isOpenNow = dialogElement.current.open;
-
-    if (open && !isOpenNow) {
-      dialogElement.current.showModal();
-    }
-
-    if (!open) {
-      dialogElement.current.close();
-    }
+  const validateMessages = {
+    required: '"${label}" is required',
   };
 
-  const doneHandler = async () => {
-    const Component = await loadComponent(remoteComponentData);
-    const componentProps = getDefaultProps(Component.propTypes);
-
-    onCreated({ ...remoteComponentData, componentProps });
-    onClose();
+  const onFinish = async () => {
+    const componentData = await form.validateFields();
+    onAdd(componentData);
   };
-
-  useEffect(() => {
-    toggle();
-  }, [toggle]);
 
   return (
-    <dialog ref={dialogElement} className={styles.dialog}>
-      <button className={styles.close} onClick={onClose} type="button">
-        x
-      </button>
-      <h2>Add component</h2>
-      <PropsEditor
-        Component={RemoteComponent}
-        componentProps={remoteComponentData}
-        omit={['componentProps']}
-        onChange={setRemoteComponentData}
-      />
-      <button type="button" onClick={doneHandler}>
-        Done
-      </button>
-    </dialog>
+    <Form
+      form={form}
+      layout="horizontal"
+      labelCol={{ span: 10 }}
+      labelWrap
+      wrapperCol={{ span: 24 }}
+      name="component.add"
+      validateMessages={validateMessages}
+      onFinish={onFinish}
+    >
+      <Form.Item
+        tooltip="Package's name where component is placed"
+        label="Package Name"
+        name="packageName"
+        rules={[{ required: true }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        tooltip="Package should export component with this name"
+        label="Component Name"
+        name="componentName"
+        rules={[{ required: true }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        tooltip="URL where the package is located"
+        label="Source"
+        name="src"
+        rules={[{ required: true }]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        tooltip="URL where the package is located in development mode"
+        label="Development source"
+        name="developmentSrc"
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        tooltip="URL where the package is located in staging mode"
+        label="Stage source"
+        name="stageSrc"
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item wrapperCol={{ span: 14, offset: 10 }}>
+        <Space>
+          <Button type="primary" htmlType="submit">
+            Add
+          </Button>
+          <Button type="default" htmlType="button" onClick={onCancel}>
+            Cancel
+          </Button>
+        </Space>
+      </Form.Item>
+    </Form>
   );
 }

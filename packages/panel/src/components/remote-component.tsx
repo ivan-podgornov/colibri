@@ -1,26 +1,34 @@
 import React, { useEffect, useState, FC } from 'react';
-import PropTypes from 'prop-types';
 
-export interface Props<T> {
-  /** Название удалённого компонента. В модуле должен быть именованный экспорт с таким именем */
+export interface RemoteComponentData {
+  /** Component's name */
   componentName: string;
 
-  /** Пропсы для этого удалённого компонента */
-  componentProps: T;
+  /** Package's name where component is placed */
+  packageName: string;
 
-  /** Название удалённого модуля */
-  moduleName: string;
-
-  /** Ссылка по которой можно получить удалённый модуль */
+  /** URL where the package is located */
   src: string;
+
+  /** URL where the package is located in development mode */
+  developmentSrc?: string;
+
+  /** URL where the package is located in staging mode */
+  stageSrc?: string;
 }
 
-export async function loadComponent<T>(props: Props<T>) {
-  const { src, componentName, moduleName } = props;
+export interface Props<T> {
+  /** Data about remote component */
+  componentData: RemoteComponentData;
 
+  /** Props for this remote component */
+  componentProps: T;
+}
+
+export async function loadComponent(componentData: RemoteComponentData) {
   await new Promise((resolve, reject) => {
     const script = document.createElement('script');
-    script.src = src;
+    script.src = componentData.src;
     script.onload = resolve;
     script.onerror = reject;
 
@@ -30,15 +38,17 @@ export async function loadComponent<T>(props: Props<T>) {
   await __webpack_init_sharing__('default');
 
   // @ts-expect-error - fix this later
-  const container = window[moduleName];
+  const container = window[componentData.moduleName];
 
   // @ts-expect-error - fix this later
   await container.init(__webpack_share_scopes__.default);
 
   // @ts-expect-error - fix this later
-  const factory = await window[moduleName].get(componentName);
+  const factory = await window[componentData.packageName].get(
+    componentData.componentName
+  );
 
-  return factory()[componentName];
+  return factory()[componentData.componentName];
 }
 
 export function RemoteComponent<T>(props: Props<T>): JSX.Element {
@@ -46,17 +56,10 @@ export function RemoteComponent<T>(props: Props<T>): JSX.Element {
   const [Component, setComponent] = useState<null | FC<any>>(null);
 
   useEffect(() => {
-    loadComponent(props).then((component) => {
+    loadComponent(props.componentData).then((component) => {
       setComponent(() => component);
     });
   }, [loadComponent]);
 
   return Component === null ? <></> : <Component {...componentProps} />;
 }
-
-RemoteComponent.propTypes = {
-  componentName: PropTypes.string.isRequired,
-  componentProps: PropTypes.object.isRequired,
-  moduleName: PropTypes.string.isRequired,
-  src: PropTypes.string.isRequired,
-};

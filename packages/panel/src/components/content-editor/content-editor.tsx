@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AddComponent } from '../add-component';
+import { ComponentsLibrary } from '../components-library';
 import { ElementEditor } from '../element-editor';
 import styles from './content-editor.module.css';
 
@@ -11,11 +11,8 @@ interface Props {
 export function ContentEditor(props: Props) {
   const { content, onChange } = props;
 
-  const [isAdding, setIsAdding] = useState(false);
-
-  const create = (props: any) => {
-    onChange([...content, props]);
-  };
+  /** True when user is selecting component */
+  const [isSelecting, setIsSelecting] = useState(false);
 
   const getChangeHandler = (index: number) => (value: any) => {
     const copy = [...content];
@@ -42,12 +39,11 @@ export function ContentEditor(props: Props) {
           </li>
         ))}
       </ul>
-      <AddComponent
-        open={isAdding}
-        onClose={() => setIsAdding(false)}
-        onCreated={create}
+      <ComponentsLibrary
+        open={isSelecting}
+        onClose={() => setIsSelecting(false)}
       />
-      <button type="button" onClick={() => setIsAdding(true)}>
+      <button type="button" onClick={() => setIsSelecting(true)}>
         Add component
       </button>
     </div>
