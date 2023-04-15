@@ -12,18 +12,18 @@ type Props<T> = RemoteComponentProps<T> & {
 };
 
 export function ElementEditor<T>(props: Props<T>): JSX.Element {
-  const { onChange, onRemove, componentName, componentProps } = props;
+  const { onChange, onRemove, componentData, componentProps } = props;
   const [Component, setComponent] = useState<null | ComponentType<any>>(null);
 
   useEffect(() => {
-    loadComponent(props).then((component) => {
+    loadComponent(componentData).then((component) => {
       setComponent(() => component);
     });
   }, [loadComponent]);
 
   return (
     <fieldset className={styles.props}>
-      <legend>{componentName}</legend>
+      <legend>{componentData.componentName}</legend>
       <button className={styles.remove} type="button" onClick={onRemove}>
         x
       </button>
