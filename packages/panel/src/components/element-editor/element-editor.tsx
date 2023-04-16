@@ -1,8 +1,6 @@
 import React, { useEffect, useState, ComponentType } from 'react';
-import {
-  loadComponent,
-  Props as RemoteComponentProps,
-} from '../remote-component';
+import { loadComponent } from '../../utils/load-component';
+import { RemoteComponentProps } from '../remote-component';
 import { PropsEditor } from '../props-editor';
 import styles from './element-editor.module.css';
 
@@ -16,8 +14,8 @@ export function ElementEditor<T>(props: Props<T>): JSX.Element {
   const [Component, setComponent] = useState<null | ComponentType<any>>(null);
 
   useEffect(() => {
-    loadComponent(componentData).then((component) => {
-      setComponent(() => component);
+    loadComponent({ componentData }).then((component) => {
+      setComponent(() => component as ComponentType);
     });
   }, [loadComponent]);
 

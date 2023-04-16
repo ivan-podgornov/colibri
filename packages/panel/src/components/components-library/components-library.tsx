@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Modal, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+
+import type { RemoteComponentData } from '../../utils/load-component';
 import { AddComponent } from '../add-component';
-import type { RemoteComponentData } from '../remote-component';
 
 interface Props {
   open: boolean;
@@ -14,6 +15,9 @@ export function ComponentsLibrary(props: Props) {
 
   const [isAdding, setIsAdding] = useState(false);
   const [components, setComponents] = useState<RemoteComponentData[]>([]);
+  const [selectedComponents, setSelectedComponents] = useState<
+    RemoteComponentData[]
+  >([]);
 
   const columns: ColumnsType<RemoteComponentData> = [
     {
@@ -48,11 +52,11 @@ export function ComponentsLibrary(props: Props) {
     setIsAdding(false);
   };
 
-  const selectComponentsHandler = (
-    keys: React.Key[],
-    rows: RemoteComponentData[]
+  const changeSelectedRowsHandler = (
+    _unused: unknown,
+    selected: RemoteComponentData[]
   ) => {
-    console.log(keys, rows);
+    setSelectedComponents(selected);
   };
 
   return (
@@ -77,11 +81,15 @@ export function ComponentsLibrary(props: Props) {
             size="small"
             rowSelection={{
               type: 'checkbox',
-              onChange: selectComponentsHandler,
+              onChange: changeSelectedRowsHandler,
             }}
           />
           <Space direction="horizontal">
-            <Button type="primary" htmlType="button">
+            <Button
+              disabled={selectedComponents.length > 0}
+              type="primary"
+              htmlType="button"
+            >
               Select
             </Button>
             <Button
