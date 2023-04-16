@@ -5,9 +5,12 @@ import styles from './page.module.css';
 
 export function Page() {
   const RemoteComponent = dynamic(
-    // eslint-disable-next-line
-    // @ts-ignore - strange error
-    () => import('../remote-component').then((mod) => mod.RemoteComponent),
+    () =>
+      // eslint-disable-next-line
+      // @ts-ignore - strange error
+      import('../remote-component/remote-component').then(
+        (mod) => mod.RemoteComponent
+      ),
     {
       ssr: false,
     }
