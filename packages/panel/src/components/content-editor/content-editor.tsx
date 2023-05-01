@@ -26,7 +26,7 @@ export function ContentEditor(props: Props) {
   /** True when user is selecting component */
   const [isSelecting, setIsSelecting] = useState(false);
 
-  const getChangeHandler = (index: number) => (value: any) => {
+  const getChangeHandler = (index: number) => (value: object) => {
     const copy = [...content];
     copy.splice(index, 1, { ...content[index], componentProps: value });
     onChange(copy);
@@ -52,8 +52,8 @@ export function ContentEditor(props: Props) {
   };
 
   return (
-    <Space direction="vertical">
-      <Collapse expandIconPosition="start">
+    <Space direction="vertical" style={{ display: 'flex' }}>
+      <Collapse>
         {content.map((element, i) => (
           <Collapse.Panel
             key={i}

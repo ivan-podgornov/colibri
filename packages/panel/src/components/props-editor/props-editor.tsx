@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState, ComponentType } from 'react';
 import type { ValidationMap, Validator } from 'prop-types';
+import { Form } from 'antd';
 
 import { loadComponent, RemoteComponentData } from '../../utils/load-component';
 import { PropEditor } from './prop-editor';
@@ -32,7 +33,7 @@ export function PropsEditor<T extends object>(props: Props<T>): JSX.Element {
     };
 
   return (
-    <div>
+    <Form layout="vertical">
       {Object.entries(propTypes).map(([propName, validator]) => (
         <PropEditor
           key={propName}
@@ -44,6 +45,6 @@ export function PropsEditor<T extends object>(props: Props<T>): JSX.Element {
           onChange={getChangeHandler(propName)}
         />
       ))}
-    </div>
+    </Form>
   );
 }

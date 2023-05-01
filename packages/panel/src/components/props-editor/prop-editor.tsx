@@ -1,5 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import type { Validator } from 'prop-types';
+import { Form, Input } from 'antd';
+
 import { getValidatorType, isRequired, ValidatorData } from './utils';
 
 interface Props<T extends ValidatorData> {
@@ -29,19 +31,14 @@ export function PropEditor<T extends ValidatorData>(props: Props<T>) {
   };
 
   return (
-    <label style={{ display: 'block', marginBottom: 8 }}>
-      <span>{propName}</span>
-      {validatorType === 'unknown' ? (
-        <span>Неизвестный тип валидатора</span>
-      ) : (
-        <input
-          value={value}
-          name={propName}
-          required={required}
-          type={validatorType === 'number' ? 'number' : 'text'}
-          onChange={changeHandler}
-        />
-      )}
-    </label>
+    <Form.Item label={propName} required={required}>
+      <Input
+        autoComplete="off"
+        name={propName}
+        type={validatorType === 'number' ? 'number' : 'text'}
+        value={value}
+        onChange={changeHandler}
+      />
+    </Form.Item>
   );
 }
