@@ -8,19 +8,21 @@
   "engines": {
     "node": "^18.12.1"
   },
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": ["packages/*"]
+  },
   "scripts": {
+    "deduplicate": "yarn yarn-deduplicate",
+    "lint:duplicates": "yarn yarn-deduplicate --list --fail",
     "lint:editorconfig": "editorconfig-checker",
     "lint:ts": "eslint ./packages/*/src/",
-    "lint": "npm run lint:editorconfig && npm run lint:ts",
-    "pre-commit": "npm run lint",
-    "postinstall": "husky install",
+    "lint": "yarn lint:editorconfig && yarn lint:duplicates && yarn lint:ts",
+    "pre-commit": "yarn lint",
+    "postinstall": "husky install && yarn deduplicate",
     "test:unit": "jest",
-    "test": "npm run test:unit",
-    "panel:start": "npm start --workspace @colibri/panel",
-    "components:start": "npm start --workspace @colibri/components"
+    "test": "yarn test:unit",
+    "panel:start": "yarn workspace @colibri/panel start",
+    "components:start": "yarn workspace @colibri/components start"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.5.1",
@@ -43,6 +45,7 @@
     "prettier": "^2.8.7",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.3"
+    "typescript": "^5.0.3",
+    "yarn-deduplicate": "^6.0.1"
   }
 }
