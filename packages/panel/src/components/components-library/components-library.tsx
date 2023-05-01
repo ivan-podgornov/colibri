@@ -16,9 +16,7 @@ export function ComponentsLibrary(props: Props) {
 
   const [isAdding, setIsAdding] = useState(false);
   const [components, setComponents] = useState<RemoteComponentData[]>([]);
-  const [selectedComponents, setSelectedComponents] = useState<
-    RemoteComponentData[]
-  >([]);
+  const [selectedComponents, setSelectedComponents] = useState<RemoteComponentData[]>([]);
 
   const columns: ColumnsType<RemoteComponentData> = [
     {
@@ -53,10 +51,7 @@ export function ComponentsLibrary(props: Props) {
     setIsAdding(false);
   };
 
-  const changeSelectedRowsHandler = (
-    _unused: unknown,
-    selected: RemoteComponentData[]
-  ) => {
+  const changeSelectedRowsHandler = (_unused: unknown, selected: RemoteComponentData[]) => {
     setSelectedComponents(selected);
   };
 
@@ -76,10 +71,7 @@ export function ComponentsLibrary(props: Props) {
       width={isAdding ? undefined : 800}
     >
       {isAdding ? (
-        <AddComponent
-          onAdd={addComponentHandler}
-          onCancel={() => setIsAdding(false)}
-        />
+        <AddComponent onAdd={addComponentHandler} onCancel={() => setIsAdding(false)} />
       ) : (
         <Space direction="vertical" size="large" style={{ display: 'flex' }}>
           <Table
@@ -101,11 +93,7 @@ export function ComponentsLibrary(props: Props) {
             >
               Select
             </Button>
-            <Button
-              type="default"
-              htmlType="button"
-              onClick={() => setIsAdding(true)}
-            >
+            <Button type="default" htmlType="button" onClick={() => setIsAdding(true)}>
               Add a new component
             </Button>
           </Space>

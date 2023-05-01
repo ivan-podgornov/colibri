@@ -8,9 +8,7 @@ export function Page() {
     () =>
       // eslint-disable-next-line
       // @ts-ignore - strange error
-      import('../remote-component/remote-component').then(
-        (mod) => mod.RemoteComponent
-      ),
+      import('../remote-component/remote-component').then((mod) => mod.RemoteComponent),
     {
       ssr: false,
     }

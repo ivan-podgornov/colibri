@@ -1,17 +1,12 @@
 import type { ComponentType } from 'react';
 import { LoadingError, LoadingErrorCode } from './loading-error';
-import type {
-  LoadingOptions,
-  ModuleFederationContainer,
-} from './load-component.types';
+import type { LoadingOptions, ModuleFederationContainer } from './load-component.types';
 
 // Webpack adds this variable after executing __webpack_init_sharing__
 declare const __webpack_share_scopes__: Record<string, string>;
 
 /** Loads remote component and returns that one */
-export async function loadComponent(
-  options: LoadingOptions
-): Promise<ComponentType> {
+export async function loadComponent(options: LoadingOptions): Promise<ComponentType> {
   const { componentData } = options;
 
   await loadPackage(options);
@@ -36,8 +31,7 @@ function loadPackage(options: LoadingOptions) {
     const script = document.createElement('script');
     script.src = options.componentData.src;
     script.onload = resolve;
-    script.onerror = () =>
-      reject(new LoadingError(LoadingErrorCode.PackageUnavailable, options));
+    script.onerror = () => reject(new LoadingError(LoadingErrorCode.PackageUnavailable, options));
 
     document.head.appendChild(script);
   });

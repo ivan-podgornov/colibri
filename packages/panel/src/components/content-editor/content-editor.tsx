@@ -41,9 +41,7 @@ export function ContentEditor(props: Props) {
   const onSelectComponents = async (components: RemoteComponentData[]) => {
     setIsSelecting(false);
 
-    const componentsProps = await Promise.all(
-      components.map(getDefaultPropsForRemoteComponent)
-    );
+    const componentsProps = await Promise.all(components.map(getDefaultPropsForRemoteComponent));
 
     const newContent: ContentElement[] = componentsProps.map((props, i) => ({
       componentData: components[i],
@@ -81,11 +79,7 @@ export function ContentEditor(props: Props) {
           </Collapse.Panel>
         ))}
       </Collapse>
-      <Button
-        type="primary"
-        htmlType="button"
-        onClick={() => setIsSelecting(true)}
-      >
+      <Button type="primary" htmlType="button" onClick={() => setIsSelecting(true)}>
         Add element
       </Button>
       <ComponentsLibrary
