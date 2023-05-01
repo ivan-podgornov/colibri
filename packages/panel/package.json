@@ -5,6 +5,7 @@
     "start": "next dev"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.0.1",
     "antd": "^5.4.2",
     "next": "^13.2.4",
     "prop-types": "^15.8.1",

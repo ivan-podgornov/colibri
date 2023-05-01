@@ -1,23 +1,28 @@
-import React, { useMemo, ComponentType } from 'react';
+import React, { useEffect, useMemo, useState, ComponentType } from 'react';
 import type { ValidationMap, Validator } from 'prop-types';
-import { PropEditor } from '../props-editor/prop-editor';
 
-type Props<T> = {
-  Component: ComponentType<T>;
+import { loadComponent, RemoteComponentData } from '../../utils/load-component';
+import { PropEditor } from './prop-editor';
+
+type Props<T extends object> = {
+  componentData: RemoteComponentData;
   componentProps: T;
-  omit?: Array<keyof T>;
   onChange: (componentProps: T) => void;
 };
 
-export function PropsEditor<T>(props: Props<T>): JSX.Element {
-  const { Component, componentProps, omit = [], onChange } = props;
+export function PropsEditor<T extends object>(props: Props<T>): JSX.Element {
+  const { componentData, componentProps, onChange } = props;
+
+  const [Component, setComponent] = useState<null | ComponentType<any>>(null);
+
+  useEffect(() => {
+    loadComponent({ componentData }).then((component) => {
+      setComponent(() => component as ComponentType);
+    });
+  }, [loadComponent]);
 
   const propTypes = useMemo((): ValidationMap<T> => {
-    const propTypes = (Component.propTypes || {}) as ValidationMap<T>;
-    const filteredEntries = (
-      Object.entries(propTypes) as [keyof T, unknown][]
-    ).filter(([key]) => !omit.includes(key));
-    return Object.fromEntries(filteredEntries) as ValidationMap<T>;
+    return (Component?.propTypes || {}) as ValidationMap<T>;
   }, [Component]);
 
   const getChangeHandler =

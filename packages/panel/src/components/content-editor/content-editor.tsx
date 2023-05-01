@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
+import { Button, Collapse, Space, Tooltip } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+
 import { ComponentsLibrary } from '../components-library';
-import { ElementEditor } from '../element-editor';
-import styles from './content-editor.module.css';
+import { PropsEditor } from '../props-editor';
+import type { RemoteComponentData } from '../../utils/load-component';
+import { getDefaultPropsForRemoteComponent } from '../../utils/get-default-props';
+
+export interface ContentElement<P extends object = object> {
+  /** Data about component that will be used for content */
+  componentData: RemoteComponentData;
+
+  /** Props for this component */
+  componentProps: P;
+}
 
 interface Props {
-  content: any[];
-  onChange: (content: any[]) => void;
+  content: ContentElement[];
+  onChange: (content: ContentElement[]) => void;
 }
 
 export function ContentEditor(props: Props) {
@@ -26,26 +38,61 @@ export function ContentEditor(props: Props) {
     onChange(copy);
   };
 
+  const onSelectComponents = async (components: RemoteComponentData[]) => {
+    setIsSelecting(false);
+
+    const componentsProps = await Promise.all(
+      components.map(getDefaultPropsForRemoteComponent)
+    );
+
+    const newContent: ContentElement[] = componentsProps.map((props, i) => ({
+      componentData: components[i],
+      componentProps: props,
+    }));
+
+    onChange([...content, ...newContent]);
+  };
+
   return (
-    <div>
-      <ul className={styles.content}>
+    <Space direction="vertical">
+      <Collapse expandIconPosition="start">
         {content.map((element, i) => (
-          <li key={i} className={styles.element}>
-            <ElementEditor
-              {...element}
+          <Collapse.Panel
+            key={i}
+            header={element.componentData.componentName}
+            extra={
+              <Tooltip title="Remove">
+                <Button
+                  htmlType="button"
+                  icon={<DeleteOutlined />}
+                  size="small"
+                  shape="circle"
+                  type="ghost"
+                  onClick={getRemoveHandler(i)}
+                />
+              </Tooltip>
+            }
+          >
+            <PropsEditor
+              componentData={element.componentData}
+              componentProps={element.componentProps}
               onChange={getChangeHandler(i)}
-              onRemove={getRemoveHandler(i)}
             />
-          </li>
+          </Collapse.Panel>
         ))}
-      </ul>
+      </Collapse>
+      <Button
+        type="primary"
+        htmlType="button"
+        onClick={() => setIsSelecting(true)}
+      >
+        Add element
+      </Button>
       <ComponentsLibrary
         open={isSelecting}
         onClose={() => setIsSelecting(false)}
+        onSelectComponents={onSelectComponents}
       />
-      <button type="button" onClick={() => setIsSelecting(true)}>
-        Add component
-      </button>
-    </div>
+    </Space>
   );
 }
