@@ -8,10 +8,11 @@ import { AddComponent } from '../add-component';
 interface Props {
   open: boolean;
   onClose: () => void;
+  onSelectComponents: (components: RemoteComponentData[]) => void;
 }
 
 export function ComponentsLibrary(props: Props) {
-  const { open, onClose } = props;
+  const { open, onClose, onSelectComponents } = props;
 
   const [isAdding, setIsAdding] = useState(false);
   const [components, setComponents] = useState<RemoteComponentData[]>([]);
@@ -59,6 +60,13 @@ export function ComponentsLibrary(props: Props) {
     setSelectedComponents(selected);
   };
 
+  const withIndexesAsKeys = (components: RemoteComponentData[]) => {
+    return components.map((component, index) => ({
+      ...component,
+      key: index,
+    }));
+  };
+
   return (
     <Modal
       footer={null}
@@ -76,7 +84,7 @@ export function ComponentsLibrary(props: Props) {
         <Space direction="vertical" size="large" style={{ display: 'flex' }}>
           <Table
             columns={columns}
-            dataSource={components}
+            dataSource={withIndexesAsKeys(components)}
             pagination={false}
             size="small"
             rowSelection={{
@@ -86,9 +94,10 @@ export function ComponentsLibrary(props: Props) {
           />
           <Space direction="horizontal">
             <Button
-              disabled={selectedComponents.length > 0}
+              disabled={selectedComponents.length === 0}
               type="primary"
               htmlType="button"
+              onClick={() => onSelectComponents(selectedComponents)}
             >
               Select
             </Button>
