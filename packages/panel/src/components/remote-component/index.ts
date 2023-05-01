@@ -1,4 +1,1 @@
-export {
-  RemoteComponent,
-  type Props as RemoteComponentProps,
-} from './remote-component';
+export { RemoteComponent, type Props as RemoteComponentProps } from './remote-component';
