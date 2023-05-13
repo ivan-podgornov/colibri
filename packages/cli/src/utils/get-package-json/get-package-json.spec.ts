@@ -26,7 +26,7 @@ describe('getPackageJson', () => {
   it('should read and parse package.json file', async () => {
     expect.assertions(2);
 
-    const expectedPackageJson: PackageJson = { main: './src/index.ts' };
+    const expectedPackageJson: PackageJson = { name: 'package', main: './src/index.ts' };
     const json = JSON.stringify(expectedPackageJson);
     (readFile as jest.Mock).mockResolvedValueOnce(json);
 
@@ -74,7 +74,7 @@ describe('getPackageJson', () => {
   it('should throw an error if package.json has an invalid main field', async () => {
     expect.assertions(1);
 
-    const json = JSON.stringify({ main: 123 });
+    const json = JSON.stringify({ name: 'package', main: 123 });
     (readFile as jest.Mock).mockResolvedValueOnce(json);
 
     await expect(getPackageJson(root)).rejects.toThrow(
@@ -85,7 +85,7 @@ describe('getPackageJson', () => {
   it('should throw an error if package.json has an invalid exports field', async () => {
     expect.assertions(1);
 
-    const json = JSON.stringify({ main: './src/index.ts', exports: '' });
+    const json = JSON.stringify({ name: 'package', main: './src/index.ts', exports: '' });
     (readFile as jest.Mock).mockResolvedValueOnce(json);
 
     await expect(getPackageJson(root)).rejects.toThrow(
