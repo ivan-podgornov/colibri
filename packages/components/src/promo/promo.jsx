@@ -1,11 +1,7 @@
-import React, { FC } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-interface Props {
-  greetings: string;
-}
-
-export const Promo: FC<Props> = (props: Props) => {
+export const Promo = (props) => {
   const { greetings } = props;
 
   return (

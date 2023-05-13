@@ -1,13 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-interface Props {
-  age: number;
-  firstName: string;
-  surname: string;
-}
-
-export function User(props: Props) {
+export function User(props) {
   const { age, firstName, surname } = props;
 
   return (
