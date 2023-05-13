@@ -1,20 +1,21 @@
 {
   "name": "@colibri/components",
-  "main": "./src/index.ts",
+  "main": "./src/index.js",
   "private": true,
   "version": "0.0.0",
+  "exports": {
+    "Promo": "./src/promo",
+    "User": "./src/user"
+  },
   "scripts": {
-    "start": "webpack && serve ./dist/ -p 3001"
+    "build": "colibri build",
+    "start": "colibri dev"
   },
   "dependencies": {
     "prop-types": "^15.8.1",
     "react": "^18.2.0"
   },
   "devDependencies": {
-    "@types/react": "^18.0.31",
-    "serve": "^14.2.0",
-    "ts-loader": "^9.4.2",
-    "webpack": "^5.77.0",
-    "webpack-cli": "^5.0.1"
+    "@colibri/cli": "^0.0.0"
   }
 }
