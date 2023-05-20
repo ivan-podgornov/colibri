@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Space, Table } from 'antd';
+import { theme, Button, ConfigProvider, Modal, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
 import type { RemoteComponentData } from '../../utils/load-component';
@@ -63,42 +63,44 @@ export function ComponentsLibrary(props: Props) {
   };
 
   return (
-    <Modal
-      footer={null}
-      title={isAdding ? 'Add a new component' : 'Components Library'}
-      open={open}
-      onCancel={onClose}
-      width={isAdding ? undefined : 800}
-    >
-      {isAdding ? (
-        <AddComponent onAdd={addComponentHandler} onCancel={() => setIsAdding(false)} />
-      ) : (
-        <Space direction="vertical" size="large" style={{ display: 'flex' }}>
-          <Table
-            columns={columns}
-            dataSource={withIndexesAsKeys(components)}
-            pagination={false}
-            size="small"
-            rowSelection={{
-              type: 'checkbox',
-              onChange: changeSelectedRowsHandler,
-            }}
-          />
-          <Space direction="horizontal">
-            <Button
-              disabled={selectedComponents.length === 0}
-              type="primary"
-              htmlType="button"
-              onClick={() => onSelectComponents(selectedComponents)}
-            >
-              Select
-            </Button>
-            <Button type="default" htmlType="button" onClick={() => setIsAdding(true)}>
-              Add a new component
-            </Button>
+    <ConfigProvider theme={{ algorithm: theme.defaultAlgorithm }}>
+      <Modal
+        footer={null}
+        title={isAdding ? 'Add a new component' : 'Components Library'}
+        open={open}
+        onCancel={onClose}
+        width={isAdding ? undefined : 800}
+      >
+        {isAdding ? (
+          <AddComponent onAdd={addComponentHandler} onCancel={() => setIsAdding(false)} />
+        ) : (
+          <Space direction="vertical" size="large" style={{ display: 'flex' }}>
+            <Table
+              columns={columns}
+              dataSource={withIndexesAsKeys(components)}
+              pagination={false}
+              size="small"
+              rowSelection={{
+                type: 'checkbox',
+                onChange: changeSelectedRowsHandler,
+              }}
+            />
+            <Space direction="horizontal">
+              <Button
+                disabled={selectedComponents.length === 0}
+                type="primary"
+                htmlType="button"
+                onClick={() => onSelectComponents(selectedComponents)}
+              >
+                Select
+              </Button>
+              <Button type="default" htmlType="button" onClick={() => setIsAdding(true)}>
+                Add a new component
+              </Button>
+            </Space>
           </Space>
-        </Space>
-      )}
-    </Modal>
+        )}
+      </Modal>
+    </ConfigProvider>
   );
 }

@@ -5,8 +5,12 @@ import { createConfig } from './create-config';
 import type { ColibriOptions } from './types';
 
 export async function run(options: ColibriOptions) {
-  const config = await createConfig(options);
-  const compiler = webpack(config);
+  const [serverConfig, clientConfig] = await Promise.all([
+    createConfig({ ...options, isServer: true }),
+    createConfig({ ...options, isServer: false }),
+  ]);
+
+  const compiler = webpack([serverConfig, clientConfig]);
 
   switch (options.mode) {
     case 'build': {
@@ -23,7 +27,7 @@ export async function run(options: ColibriOptions) {
       break;
     }
     case 'development': {
-      const server = new WebpackDevServer(config.devServer, compiler);
+      const server = new WebpackDevServer({}, compiler);
       server.listen(3001, 'localhost', () => console.log('port 3001 closed'));
       break;
     }
