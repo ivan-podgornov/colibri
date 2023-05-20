@@ -1,24 +1,35 @@
 import path from 'node:path';
-import { container, Configuration } from 'webpack';
+import { Configuration } from 'webpack';
 
 import type { ColibriOptions } from './types';
-import { exportsToExposes, getMain, getPackageJson, getPackageName } from './utils';
+import { getFederationPlugin, getMain, getPackageJson, getPackageName } from './utils';
 
-export async function createConfig(options: ColibriOptions): Promise<Configuration> {
+interface ConfigConstructorOptions extends ColibriOptions {
+  isServer: boolean;
+}
+
+export async function createConfig(options: ConfigConstructorOptions): Promise<Configuration> {
   const { mode, root } = options;
   const packageJson = await getPackageJson(root);
 
   return {
+    name: options.isServer ? 'server' : 'client',
     mode: mode === 'build' ? 'production' : 'development',
+    target: false,
 
     entry: {
       main: getMain(root, packageJson),
     },
 
     output: {
+      chunkFormat: 'commonjs',
       clean: true,
       filename: '[name].js',
       path: path.resolve(root, './dist/'),
+      library: {
+        name: getPackageName(packageJson.name),
+        type: 'commonjs-module',
+      },
     },
 
     module: {
@@ -36,29 +47,7 @@ export async function createConfig(options: ColibriOptions): Promise<Configurati
       ],
     },
 
-    plugins: [
-      new container.ModuleFederationPlugin({
-        name: getPackageName(packageJson.name),
-        filename: 'remoteEntry.js',
-        exposes: exportsToExposes(packageJson.exports),
-        shared: {
-          'prop-types': {
-            requiredVersion: '^15',
-            import: 'prop-types',
-            shareKey: 'prop-types',
-            shareScope: 'default',
-            singleton: true,
-          },
-          react: {
-            requiredVersion: '^18',
-            import: 'react',
-            shareKey: 'react',
-            shareScope: 'default',
-            singleton: true,
-          },
-        },
-      }),
-    ],
+    plugins: [getFederationPlugin(options.isServer, packageJson)],
 
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.jsx'],
