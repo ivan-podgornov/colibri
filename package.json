@@ -21,6 +21,7 @@
     "postinstall": "husky install && yarn deduplicate",
     "test:unit": "jest",
     "test": "yarn test:unit",
+    "api:start": "yarn workspace @colibri/api start",
     "cli:build": "yarn workspace @colibri/cli build",
     "panel:start": "yarn workspace @colibri/panel start",
     "components:build": "yarn workspace @colibri/components build",
