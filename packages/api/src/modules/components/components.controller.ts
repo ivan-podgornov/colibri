@@ -1,13 +1,17 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { Component, Prisma } from '@prisma/client';
-import { ComponentsService } from './components.service';
+import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
-@Controller('/components')
+import { ComponentsService } from './components.service';
+import { ComponentDto, ComponentDtoConstuctorOptions } from './components.types';
+
+@Controller('components')
+@ApiTags('Components')
 export class ComponentsController {
   constructor(private readonly componentsService: ComponentsService) {}
 
   @Post()
-  create(@Body() data: Prisma.ComponentCreateInput): Promise<Component> {
+  @ApiCreatedResponse({ type: ComponentDto })
+  create(@Body() data: ComponentDtoConstuctorOptions): Promise<ComponentDto> {
     return this.componentsService.create(data);
   }
 }
