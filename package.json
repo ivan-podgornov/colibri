@@ -9,7 +9,9 @@
     "node": "^18.12.1"
   },
   "workspaces": {
-    "packages": ["packages/*"]
+    "packages": [
+      "packages/*"
+    ]
   },
   "scripts": {
     "deduplicate": "yarn yarn-deduplicate",
@@ -21,6 +23,8 @@
     "postinstall": "husky install && yarn deduplicate",
     "test:unit": "jest",
     "test": "yarn test:unit",
+    "api:build": "yarn workspace @colibri/api build",
+    "api:start": "yarn workspace @colibri/api start",
     "cli:build": "yarn workspace @colibri/cli build",
     "panel:start": "yarn workspace @colibri/panel start",
     "components:build": "yarn workspace @colibri/components build",
