@@ -9,7 +9,9 @@
     "node": "^18.12.1"
   },
   "workspaces": {
-    "packages": ["packages/*"]
+    "packages": [
+      "packages/*"
+    ]
   },
   "scripts": {
     "deduplicate": "yarn yarn-deduplicate",
