@@ -24,6 +24,7 @@
     "test:unit": "jest",
     "test": "yarn test:unit",
     "api:build": "yarn workspace @colibri/api build",
+    "api:prepare": "yarn workspace @colibri/api prepare",
     "api:start": "yarn workspace @colibri/api start",
     "cli:build": "yarn workspace @colibri/cli build",
     "panel:start": "yarn workspace @colibri/panel start",

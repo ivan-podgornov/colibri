@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nest build",
+    "prepare": "prisma db push",
     "start": "nest start --watch"
   },
   "dependencies": {
