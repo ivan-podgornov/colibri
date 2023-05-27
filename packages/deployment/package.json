@@ -6,7 +6,10 @@
     "deployment": "src/cli.ts"
   },
   "dependencies": {
-    "commander": "^10.0.1"
+    "@types/ejs": "^3.1.2",
+    "commander": "^10.0.1",
+    "find-free-ports": "^3.1.1",
+    "ejs": "^3.1.9"
   },
   "peerDependencies": {
     "ts-node": "*",

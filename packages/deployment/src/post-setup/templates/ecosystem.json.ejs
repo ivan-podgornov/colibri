@@ -1,0 +1,34 @@
+{
+  "apps": [
+    {
+      "name": "@colibri/api",
+      "script": "yarn",
+      "args": "workspace @colibri/api prod",
+      "watch": false,
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": <%= ports.api %>
+      }
+    },
+    {
+      "name": "@colibri/panel",
+      "script": "yarn",
+      "args": "workspace @colibri/panel prod",
+      "watch": false,
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": <%= ports.panel %>
+      }
+    },
+    {
+      "name": "@colibri/components",
+      "script": "yarn",
+      "args": "workspace @colibri/components prod",
+      "watch": false,
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": <%= ports.components %>
+      }
+    }
+  ]
+}
