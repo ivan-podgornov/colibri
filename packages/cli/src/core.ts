@@ -28,7 +28,14 @@ export async function run(options: ColibriOptions) {
     }
     case 'development': {
       const server = new WebpackDevServer({}, compiler);
-      server.listen(3001, 'localhost', () => console.log('port 3001 closed'));
+      const port = Number(process.env.PORT) || 3001;
+      server.listen(port, 'localhost', (error) => {
+        if (error) {
+          console.error(error);
+        } else {
+          console.log(`components has been started on the port ${port}`);
+        }
+      });
       break;
     }
   }
