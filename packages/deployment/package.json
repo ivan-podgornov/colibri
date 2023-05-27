@@ -1,0 +1,15 @@
+{
+  "name": "@colibri/deployment",
+  "private": true,
+  "version": "0.0.0",
+  "bin": {
+    "deployment": "src/cli.ts"
+  },
+  "dependencies": {
+    "commander": "^10.0.1"
+  },
+  "peerDependencies": {
+    "ts-node": "*",
+    "typescript": "*"
+  }
+}
