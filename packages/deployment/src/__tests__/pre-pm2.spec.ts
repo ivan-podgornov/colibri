@@ -31,6 +31,10 @@ describe('pre-pm2', () => {
           path: '/home/pm2/repository/issue-28',
           ref: 'origin/issue-28',
           repo: 'https://github.com/user/repository',
+          'post-setup':
+            'yarn install --frozen-lockfile && yarn deployment post-setup --branch-name="origin/issue-28" --domain="my-domain.com" && nginx -t',
+          'post-deploy':
+            'PM2_HOME=./.pm2/ yarn pm2 startOrRestart ./packages/deployment/dist/ecosystem.json && service nginx reload',
         },
       },
     });

@@ -25,6 +25,9 @@ export function getDeploymentConfig(options: PrePm2Options): DeploymentConfig {
     path: getPath(options),
     ref: options.branchRef,
     repo: options.repository,
+    'post-setup': `yarn install --frozen-lockfile && yarn deployment post-setup --branch-name="${options.branchRef}" --domain="${options.domain}" && nginx -t`,
+    'post-deploy':
+      'PM2_HOME=./.pm2/ yarn pm2 startOrRestart ./packages/deployment/dist/ecosystem.json && service nginx reload',
   };
 }
 

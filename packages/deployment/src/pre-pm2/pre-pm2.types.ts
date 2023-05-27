@@ -19,4 +19,6 @@ export interface DeploymentConfig {
   path: string;
   ref: string;
   repo: string;
+  'post-setup': string;
+  'post-deploy': string;
 }
