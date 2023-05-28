@@ -13,7 +13,7 @@ export async function postSetup(options: PostSetupOptions) {
   const hosts = getHosts(options);
 
   const [pm2Config, nginxConf] = await Promise.all([
-    getPm2Config(ports),
+    getPm2Config(options, ports),
     getNginxConfig(hosts, ports),
   ]);
 
@@ -27,9 +27,13 @@ export async function postSetup(options: PostSetupOptions) {
 }
 
 /** Returns pm2 config for applications */
-function getPm2Config(ports: PortsMap) {
-  const templatePath = path.resolve(__dirname, './templates/ecosystem.json.ejs');
-  return ejs.renderFile(templatePath, { ports });
+function getPm2Config(options: PostSetupOptions, ports: PortsMap) {
+  return ejs.renderFile(path.resolve(__dirname, './templates/ecosystem.json.ejs'), {
+    ports,
+    database: {
+      url: options.databaseUrl,
+    },
+  });
 }
 
 /** Returns nginx config for current branch */

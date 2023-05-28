@@ -11,6 +11,14 @@ export interface PrePm2Options {
   workingPath: string;
   /** User's name on the remote server */
   user: string;
+  /** User for connection to database */
+  databaseUser: string;
+  /** Password for connection to database */
+  databasePassword: string;
+  /** Database host */
+  databaseHost: string;
+  /** Database port */
+  databasePort: number;
 }
 
 export interface DeploymentConfig {

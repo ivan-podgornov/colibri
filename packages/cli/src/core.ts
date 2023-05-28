@@ -27,7 +27,7 @@ export async function run(options: ColibriOptions) {
       break;
     }
     case 'development': {
-      const server = new WebpackDevServer({}, compiler);
+      const server = new WebpackDevServer({ allowedHosts: 'all' }, compiler);
       const port = Number(process.env.PORT) || 3001;
       server.listen(port, 'localhost', (error) => {
         if (error) {

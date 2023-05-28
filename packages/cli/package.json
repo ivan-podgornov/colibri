@@ -3,10 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "bin": {
-    "colibri": "dist/cli.js"
-  },
-  "scripts": {
-    "build": "tsc -p tsconfig.json"
+    "colibri": "src/cli.ts"
   },
   "dependencies": {
     "@babel/core": "^7.21.8",
@@ -17,5 +14,8 @@
     "commander": "^10.0.1",
     "webpack": "^5.81.0",
     "webpack-dev-server": "^4.13.3"
+  },
+  "peerDependencies": {
+    "ts-node": "*"
   }
 }

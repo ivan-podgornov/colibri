@@ -15,7 +15,8 @@ describe('pre-pm2', () => {
       fs.rm(ecosystemPath, { force: true, recursive: true }),
       fs.rm(nginxConfPath, { force: true, recursive: true }),
     ]);
-    const command = 'yarn deployment post-setup --branch-ref origin/main --domain "my-domain.com"';
+    const command =
+      'yarn deployment post-setup --branch-ref origin/main --domain "my-domain.com" --database-url "postgresql://dbuser:dbpassword@127.0.0.1:5432/main"';
     execSync(command, { encoding: 'utf-8', stdio: 'ignore' });
   });
 
@@ -24,9 +25,10 @@ describe('pre-pm2', () => {
 
     const ecosystem = await fs.readFile(ecosystemPath, 'utf-8');
     const ports: PortsMap = { api: 3002, components: 3001, panel: 3000 };
+    const database = { url: 'postgresql://dbuser:dbpassword@127.0.0.1:5432/main' };
     const expectedEcosystem = await ejs.renderFile(
       path.resolve(__dirname, '../post-setup/templates/ecosystem.json.ejs'),
-      { ports }
+      { ports, database }
     );
 
     expect(ecosystem).toBe(expectedEcosystem);

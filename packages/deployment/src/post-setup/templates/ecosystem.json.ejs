@@ -6,6 +6,7 @@
       "args": "workspace @colibri/api prod",
       "watch": false,
       "env": {
+        "DATABASE_URL": "<%= database.url %>",
         "NODE_ENV": "production",
         "PORT": <%= ports.api %>
       }

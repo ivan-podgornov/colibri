@@ -12,7 +12,8 @@ describe('pre-pm2', () => {
     const command =
       'yarn deployment pre-pm2 --branch-ref origin/issue-28 --domain "my-domain.com" ' +
       '--host "192.168.0.1" --repository "https://github.com/user/repository" ' +
-      '--working-path "/home/pm2/repository" --user pm2';
+      '--working-path "/home/pm2/repository" --user pm2 --database-user dbuser ' +
+      '--database-password dbpassword --database-host 127.0.0.1 --database-port 5432';
 
     execSync(command, { encoding: 'utf-8', stdio: 'ignore' });
   });
@@ -32,9 +33,9 @@ describe('pre-pm2', () => {
           ref: 'origin/issue-28',
           repo: 'https://github.com/user/repository',
           'post-setup':
-            'yarn install --frozen-lockfile && yarn deployment post-setup --branch-name="origin/issue-28" --domain="my-domain.com" && nginx -t',
+            "yarn install --frozen-lockfile && yarn deployment post-setup --branch-ref='origin/issue-28' --domain='my-domain.com' --database-url='postgresql://dbuser:dbpassword@127.0.0.1:5432/issue-28' && nginx -t",
           'post-deploy':
-            'PM2_HOME=./.pm2/ yarn pm2 startOrRestart ./packages/deployment/dist/ecosystem.json && service nginx reload',
+            'PM2_HOME=./.pm2/ pm2 startOrRestart ./packages/deployment/dist/ecosystem.json && nginx -s reload',
         },
       },
     });

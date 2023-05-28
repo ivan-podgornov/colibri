@@ -14,6 +14,7 @@ jest.mock<typeof import('find-free-ports')>('find-free-ports', () => {
 const defaultOptions: PostSetupOptions = {
   branchRef: 'origin/issue-n',
   domain: 'my-domain.com',
+  databaseUrl: 'postgresql://dbuser:dbpassword@127.0.0.1:5432/issue-n',
 };
 
 describe('getPorts', () => {

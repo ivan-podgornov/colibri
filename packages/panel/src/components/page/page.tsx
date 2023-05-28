@@ -6,28 +6,7 @@ import { ContentEditor, ContentElement } from '../content-editor';
 import styles from './page.module.css';
 
 export function Page() {
-  const [content, setContent] = useState<ContentElement[]>([
-    {
-      componentData: {
-        packageName: 'colibri_components',
-        componentName: 'Promo',
-        src: 'http://localhost:3001/',
-      },
-      componentProps: { greetings: "Hello! I'm remote component Promo" },
-    },
-    {
-      componentData: {
-        packageName: 'colibri_components',
-        componentName: 'User',
-        src: 'http://localhost:3001/',
-      },
-      componentProps: {
-        firstName: 'Peet',
-        surname: 'Peeterson',
-        age: 26,
-      },
-    },
-  ]);
+  const [content, setContent] = useState<ContentElement[]>([]);
 
   return (
     <Layout className={styles.layout} hasSider>

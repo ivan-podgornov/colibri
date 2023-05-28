@@ -8,7 +8,6 @@ services:
     environment:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD-password}
       POSTGRES_USER: ${DATABASE_USER-user}
-      POSTGRES_DB: ${DATABASE_DB-colibri}
       PGDATA: /var/lib/postgresql/data/pgdata
     networks:
       - database
