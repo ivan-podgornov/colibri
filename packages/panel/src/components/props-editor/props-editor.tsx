@@ -14,7 +14,7 @@ type Props<T extends object> = {
 export function PropsEditor<T extends object>(props: Props<T>): JSX.Element {
   const { componentData, componentProps, onChange } = props;
 
-  const [Component, setComponent] = useState<null | ComponentType<any>>(null);
+  const [Component, setComponent] = useState<null | ComponentType>(null);
 
   useEffect(() => {
     loadComponent({ componentData }).then((component) => {

@@ -9,7 +9,8 @@
   },
   "scripts": {
     "build": "colibri build",
-    "start": "colibri dev"
+    "start": "colibri dev",
+    "prod": "colibri dev"
   },
   "dependencies": {
     "prop-types": "^15.8.1",

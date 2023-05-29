@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "build": "nest build",
+    "prepare": "prisma db push",
+    "prod": "yarn prepare && nest build && nest start",
     "start": "nest start --watch"
   },
   "dependencies": {
