@@ -2,7 +2,7 @@
 
 import { Command } from 'commander';
 import { prePm2 } from './pre-pm2';
-import { postSetup } from './post-setup';
+import { preDeploy } from './pre-deploy';
 
 const program = new Command('deployment');
 
@@ -21,10 +21,10 @@ program
   .action(prePm2);
 
 program
-  .command('post-setup')
+  .command('pre-deploy')
   .option('-b, --branch-ref <string>', 'The ref of the branch that is being published')
   .option('-d, --domain <string>', 'The domain name through which the server is accessible')
   .option('--database-url <string>', 'URL that can be used for connect to database')
-  .action(postSetup);
+  .action(preDeploy);
 
 program.parse(process.argv);

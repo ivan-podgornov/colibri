@@ -4,19 +4,19 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import ejs from 'ejs';
-import type { HostsMap, PortsMap } from '../post-setup/post-setup.types';
+import type { HostsMap, PortsMap } from '../pre-deploy/pre-deploy.types';
 
 const ecosystemPath = path.resolve(__dirname, '../../dist/ecosystem.json');
 const nginxConfPath = path.resolve(__dirname, '../../dist/nginx.conf');
 
-describe('pre-pm2', () => {
+describe('pre-deploy', () => {
   beforeAll(async () => {
     await Promise.all([
       fs.rm(ecosystemPath, { force: true, recursive: true }),
       fs.rm(nginxConfPath, { force: true, recursive: true }),
     ]);
     const command =
-      'yarn deployment post-setup --branch-ref origin/main --domain "my-domain.com" --database-url "postgresql://dbuser:dbpassword@127.0.0.1:5432/main"';
+      'yarn deployment pre-deploy --branch-ref origin/main --domain "my-domain.com" --database-url "postgresql://dbuser:dbpassword@127.0.0.1:5432/main"';
     execSync(command, { encoding: 'utf-8', stdio: 'ignore' });
   });
 
@@ -27,7 +27,7 @@ describe('pre-pm2', () => {
     const ports: PortsMap = { api: 3002, components: 3001, panel: 3000 };
     const database = { url: 'postgresql://dbuser:dbpassword@127.0.0.1:5432/main' };
     const expectedEcosystem = await ejs.renderFile(
-      path.resolve(__dirname, '../post-setup/templates/ecosystem.json.ejs'),
+      path.resolve(__dirname, '../pre-deploy/templates/ecosystem.json.ejs'),
       { ports, database }
     );
 
@@ -45,7 +45,7 @@ describe('pre-pm2', () => {
       panel: 'my-domain.com',
     };
     const expectedNginxConf = await ejs.renderFile(
-      path.resolve(__dirname, '../post-setup/templates/nginx.conf.ejs'),
+      path.resolve(__dirname, '../pre-deploy/templates/nginx.conf.ejs'),
       { ports, hosts }
     );
 
