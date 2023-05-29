@@ -5,10 +5,10 @@ import ejs from 'ejs';
 import { mkdirIfNotExists } from '../utils';
 import { getPorts } from './get-ports';
 import { getHosts } from './get-hosts';
-import type { HostsMap, PortsMap, PostSetupOptions } from './post-setup.types';
+import type { HostsMap, PortsMap, PreDeployOptions } from './pre-deploy.types';
 
 /** Creates pm2 config for applications and nginx.conf for specified branch */
-export async function postSetup(options: PostSetupOptions) {
+export async function preDeploy(options: PreDeployOptions) {
   const ports = await getPorts(options);
   const hosts = getHosts(options);
 
@@ -27,7 +27,7 @@ export async function postSetup(options: PostSetupOptions) {
 }
 
 /** Returns pm2 config for applications */
-function getPm2Config(options: PostSetupOptions, ports: PortsMap) {
+function getPm2Config(options: PreDeployOptions, ports: PortsMap) {
   return ejs.renderFile(path.resolve(__dirname, './templates/ecosystem.json.ejs'), {
     ports,
     database: {

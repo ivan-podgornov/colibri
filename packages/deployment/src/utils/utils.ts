@@ -21,3 +21,11 @@ export async function mkdirIfNotExists(path: string): Promise<void> {
 export function getBranchName(branchRef: string): string {
   return path.basename(branchRef);
 }
+
+/**
+ * Returns path on the remote server where branch will be deployment
+ */
+export function getPath(branchRef: string, workingPath: string): string {
+  const branchName = getBranchName(branchRef);
+  return path.join(workingPath, branchName);
+}

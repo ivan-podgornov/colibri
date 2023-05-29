@@ -1,8 +1,8 @@
 import { getBranchName } from '../utils';
-import type { HostsMap, PostSetupOptions } from './post-setup.types';
+import type { HostsMap, PreDeployOptions } from './pre-deploy.types';
 
 /** Returns hosts where applications will be available */
-export function getHosts(options: PostSetupOptions): HostsMap {
+export function getHosts(options: PreDeployOptions): HostsMap {
   const branchName = getBranchName(options.branchRef);
 
   if (branchName === 'main') {

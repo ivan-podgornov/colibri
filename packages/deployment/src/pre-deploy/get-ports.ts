@@ -1,6 +1,6 @@
 import { findFreePorts } from 'find-free-ports';
 import { getBranchName } from '../utils';
-import type { PostSetupOptions, PortsMap } from './post-setup.types';
+import type { PreDeployOptions, PortsMap } from './pre-deploy.types';
 
 export const DEFAULT_PORTS = {
   components: 3001,
@@ -9,7 +9,7 @@ export const DEFAULT_PORTS = {
 };
 
 /** Returns ports where applications will be available */
-export async function getPorts(options: PostSetupOptions): Promise<PortsMap> {
+export async function getPorts(options: PreDeployOptions): Promise<PortsMap> {
   const branchName = getBranchName(options.branchRef);
 
   if (branchName === 'main') {

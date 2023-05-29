@@ -1,1 +1,1 @@
-export { getBranchName, mkdirIfNotExists } from './utils';
+export { getBranchName, getPath, mkdirIfNotExists } from './utils';
