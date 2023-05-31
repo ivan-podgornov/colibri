@@ -1,6 +1,16 @@
 name: Pull request
 
-on: [pull_request]
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - closed
+      - synchronize
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -21,3 +31,68 @@ jobs:
         run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
       - name: Run tests
         run: npm run test
+
+  # This action must create environment. URL of this environment will take from outputs
+  # This action must stop before runned action
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' || github.event.action == 'reopened' }}
+        run: echo "I calls only when pull request is created or reopened"
+      - run: echo "I calls on every push to pull request"
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 18
+      #     cache: yarn
+      # - run: yarn install --frozen-lockfile
+      # - run: echo "I run only when pull request created"
+      # - name: Generate deployment config
+      #   run: |
+      #     yarn deployment pre-pm2 \
+      #       --branch-ref origin/issue-28 \                              # context
+      #       --domain "colibrijs.io" \                                   # secrets
+      #       --host "192.168.0.1" \                                      # secrets
+      #       --repository "https://github.com/ivan-podgornov/colibri" \  # context
+      #       --working-path "/home/root/colibri" \                       # secrets
+      #       --user root \                                               # secrets
+      #       --database-user dbuser \                                    # secrets
+      #       --database-password dbpassword \                            # secrets
+      #       --database-host 127.0.0.1 \                                 # secrets
+      #       --database-port 5432 \                                      # secrets
+      # - name: "Setup deployment on the remote server"
+      #   # this step must calls only when pull request created or reopened
+      #   run: yarn pm2 deploy ./packages/deployment/dist/deployment.json branch setup
+      # - name: "Deploy branch to the remote server"
+      #   run: yarn pm2 deploy ./packages/deployment/dist/deployment.json branch
+
+  # This step must calls only when pull request closed or merged
+  # This action must remove environment. URL of this environment will take from util
+  # This action must stop before runned action
+  remove-deploy:
+    if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: "I calls only when pull request closed or merged"
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 18
+      #     cache: yarn
+      # - run: yarn install --frozen-lockfile
+      # - run: echo "I run only when pull request created"
+      # - name: Generate deployment removing config
+      #   run: |
+      #     yarn deployment remove \
+      #       --branch-ref origin/issue-34 \                             # context
+      #       --host "192.168.0.1" \                                     # secrets
+      #       --repository "https://github.com/ivan-podgornov/colibri" \ # context
+      #       --working-path "/home/root/colibri" \                      # secrets
+      #       --user root' \                                             # secrets
+      # - name: "Remove branch' deployment on the remove server"
+      #   run: yarn pm2 deploy ./packages/deployment/dist/remove-deployment.json remove
