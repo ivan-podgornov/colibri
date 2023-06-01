@@ -33,8 +33,7 @@ jobs:
       # - name: Run tests
       #   run: npm run test
 
-  deploy:
-    if: ${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened' || github.event.action == 'synchronize') }}
+  deployment:
     needs: test
     uses: ./.github/workflows/deployments.yml
     secrets: inherit
