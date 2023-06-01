@@ -22,6 +22,7 @@ export interface PrePm2Options {
 }
 
 export interface DeploymentConfig {
+  key: string;
   user: string;
   host: string;
   path: string;

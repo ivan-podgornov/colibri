@@ -23,6 +23,7 @@ function getDeploymentConfig(options: PrePm2Options): DeploymentConfig {
   const databaseUrl = getDatabaseUrl(options);
 
   return {
+    key: 'deploy.key',
     user: options.user,
     host: options.host,
     path: getPath(options.branchRef, options.workingPath),

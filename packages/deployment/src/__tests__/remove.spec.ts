@@ -26,6 +26,7 @@ describe('remove', () => {
     expect(config).toStrictEqual({
       deploy: {
         remove: {
+          key: 'deploy.key',
           user: 'pm2',
           host: '192.168.0.1',
           path: '/home/pm2/repository/issue-34',

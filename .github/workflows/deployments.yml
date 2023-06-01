@@ -11,6 +11,8 @@ on:
       DATABASE_PASSWORD: { required: true }
       DATABASE_HOST: { required: true }
       DATABASE_PORT: { required: true }
+      SSH_PRIVATE_KEY: { required: true }
+      SSH_KNOWN_HOSTS: { required: true }
 
 jobs:
   # This action must create environment. URL of this environment will take from outputs
@@ -25,26 +27,35 @@ jobs:
         with:
           node-version: 18
           cache: yarn
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT"
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          mkdir -p ./packages/deployment/dist/
+          echo "$SSH_PRIVATE_KEY" > ./deploy.key
+          sudo chmod 600 ./deploy.key
+          echo "$SSH_PRIVATE_KEY" > ./packages/deployment/dist/deploy.key
+          sudo chmod 600 ./packages/deployment/dist/deploy.key
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Generate deployment config
         run: |
           yarn deployment pre-pm2 \
             --branch-ref "origin/${{ github.head_ref }}" \
             --domain "colibrijs.io" \
             --host "194.67.121.95" \
-            --repository "${{ github.repositoryUrl }}" \
-            --working-path "/root/" \
+            --repository "${{ github.server_url }}/${{ github.repository }}/" \
+            --working-path "/root/colibri/" \
             --user "root" \
             --database-user "user" \
             --database-password "password" \
             --database-host "127.0.0.1" \
             --database-port 5432
-      - if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' || github.event.action == 'reopened' }}
+      - # if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' || github.event.action == 'reopened' }}
         name: "Setup deployment on the remote server"
         run: yarn pm2 deploy ./packages/deployment/dist/deployment.json branch setup
       - name: "Deploy branch to the remote server"
@@ -62,6 +73,19 @@ jobs:
         with:
           node-version: 18
           cache: yarn
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          mkdir -p ./packages/deployment/dist/
+          echo "$SSH_PRIVATE_KEY" > ./deploy.key
+          sudo chmod 600 ./deploy.key
+          echo "$SSH_PRIVATE_KEY" > ./packages/deployment/dist/deploy.key
+          sudo chmod 600 ./packages/deployment/dist/deploy.key
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Generate deployment removing config
@@ -69,7 +93,7 @@ jobs:
           yarn deployment remove \
             --branch-ref "origin/${{ github.head_ref }}" \
             --host ${{ secrets.HOST }} \
-            --repository "${{ github.repositoryUrl }}" \
+            --repository "${{ github.server_url }}/${{ github.repository }}/" \
             --working-path "${{ secrets.WORKING_PATH }}" \
             --user "${{ secrets.USER }}"
       - name: "Remove branch' deployment on the remote server"

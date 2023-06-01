@@ -12,6 +12,7 @@ export interface RemoveOptions {
 }
 
 export interface DeploymentConfig {
+  key: string;
   user: string;
   host: string;
   path: string;
