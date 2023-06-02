@@ -10,7 +10,7 @@ describe('print-link', () => {
       'yarn -s deployment print-link --branch-ref origin/issue-28 --domain my-domain.com';
     const stdout = execSync(command, { encoding: 'utf-8' });
 
-    expect(stdout).toBe('issue-28.my-domain.com');
+    expect(stdout).toBe('http://issue-28.my-domain.com');
   });
 
   it('for main branch, prints link that equal to specified domain', () => {
@@ -19,6 +19,6 @@ describe('print-link', () => {
     const command = 'yarn -s deployment print-link --branch-ref origin/main --domain my-domain.com';
     const stdout = execSync(command, { encoding: 'utf-8' });
 
-    expect(stdout).toBe('my-domain.com');
+    expect(stdout).toBe('http://my-domain.com');
   });
 });

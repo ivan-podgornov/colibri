@@ -5,5 +5,5 @@ import { getHosts } from '../utils';
 export async function printLink(options: PrintLinkOptions) {
   const hosts = getHosts(options.branchRef, options.domain);
 
-  process.stdout.write(hosts.panel);
+  process.stdout.write(`http://${hosts.panel}`);
 }

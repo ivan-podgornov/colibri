@@ -3,7 +3,6 @@ name: Deployments
 on:
   workflow_call:
     secrets:
-      DOMAIN: { required: true }
       HOST: { required: true }
       USER: { required: true }
       WORKING_PATH: { required: true }
@@ -18,10 +17,12 @@ permissions:
   actions: write
 
 jobs:
-  # This action must create environment. URL of this environment will take from outputs
   deploy:
     if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' || github.event.action == 'reopened' || github.event.action == 'synchronize' }}
     runs-on: ubuntu-latest
+    environment:
+      name: Deployment ${{ github.head_ref }}
+      url: ${{ steps.print-deployment-link.outputs.link }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -46,7 +47,7 @@ jobs:
         run: |
           yarn deployment pre-pm2 \
             --branch-ref "origin/${{ github.head_ref }}" \
-            --domain "${{ secrets.DOMAIN }}" \
+            --domain "${{ vars.DOMAIN }}" \
             --host "${{ secrets.HOST }}" \
             --repository "${{ github.server_url }}/${{ github.repository }}/" \
             --working-path "${{ secrets.WORKING_PATH }}" \
@@ -60,6 +61,9 @@ jobs:
         run: yarn pm2 deploy ./packages/deployment/dist/deployment.json branch setup
       - name: "Deploy branch to the remote server"
         run: yarn pm2 deploy ./packages/deployment/dist/deployment.json branch
+      - id: print-deployment-link
+        name: Print deployment link
+        run: echo "link=$(yarn -s deployment print-link --branch-ref "origin/${{ github.head_ref }}" --domain "${{ vars.DOMAIN }}")" >> $GITHUB_OUTPUT
 
   # This action must remove environment. URL of this environment will take from util
   remove:
