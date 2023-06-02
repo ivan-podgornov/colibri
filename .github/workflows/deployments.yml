@@ -14,6 +14,9 @@ on:
       SSH_PRIVATE_KEY: { required: true }
       SSH_KNOWN_HOSTS: { required: true }
 
+permissions:
+  actions: write
+
 jobs:
   # This action must create environment. URL of this environment will take from outputs
   deploy:
@@ -33,29 +36,26 @@ jobs:
         run: |
           mkdir -p ~/.ssh/
           mkdir -p ./packages/deployment/dist/
-          echo "$SSH_PRIVATE_KEY" > ./deploy.key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ./deploy.key
           sudo chmod 600 ./deploy.key
-          echo "$SSH_PRIVATE_KEY" > ./packages/deployment/dist/deploy.key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ./packages/deployment/dist/deploy.key
           sudo chmod 600 ./packages/deployment/dist/deploy.key
-          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
         shell: bash
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Generate deployment config
         run: |
           yarn deployment pre-pm2 \
             --branch-ref "origin/${{ github.head_ref }}" \
-            --domain "colibrijs.io" \
-            --host "194.67.121.95" \
+            --domain "${{ secrets.DOMAIN }}" \
+            --host "${{ secrets.HOST }}" \
             --repository "${{ github.server_url }}/${{ github.repository }}/" \
-            --working-path "/root/colibri/" \
-            --user "root" \
-            --database-user "user" \
-            --database-password "password" \
-            --database-host "127.0.0.1" \
-            --database-port 5432
-      - # if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' || github.event.action == 'reopened' }}
+            --working-path "${{ secrets.WORKING_PATH }}" \
+            --user "${{ secrets.USER }}" \
+            --database-user "${{ secrets.DATABASE_USER }}" \
+            --database-password "${{ secrets.DATABASE_PASSWORD }}" \
+            --database-host "${{ secrets.DATABASE_HOST }}" \
+            --database-port "${{ secrets.DATABASE_PORT }}"
+      - if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' || github.event.action == 'reopened' }}
         name: "Setup deployment on the remote server"
         run: yarn pm2 deploy ./packages/deployment/dist/deployment.json branch setup
       - name: "Deploy branch to the remote server"
@@ -77,15 +77,11 @@ jobs:
         run: |
           mkdir -p ~/.ssh/
           mkdir -p ./packages/deployment/dist/
-          echo "$SSH_PRIVATE_KEY" > ./deploy.key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ./deploy.key
           sudo chmod 600 ./deploy.key
-          echo "$SSH_PRIVATE_KEY" > ./packages/deployment/dist/deploy.key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ./packages/deployment/dist/deploy.key
           sudo chmod 600 ./packages/deployment/dist/deploy.key
-          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-        shell: bash
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Generate deployment removing config
