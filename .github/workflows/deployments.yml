@@ -13,16 +13,10 @@ on:
       SSH_PRIVATE_KEY: { required: true }
       SSH_KNOWN_HOSTS: { required: true }
 
-permissions:
-  actions: write
-
 jobs:
   deploy:
     if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' || github.event.action == 'reopened' || github.event.action == 'synchronize' }}
     runs-on: ubuntu-latest
-    environment:
-      name: Deployment ${{ github.head_ref }}
-      url: ${{ steps.print-deployment-link.outputs.link }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -36,11 +30,8 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh/
-          mkdir -p ./packages/deployment/dist/
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ./deploy.key
           sudo chmod 600 ./deploy.key
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ./packages/deployment/dist/deploy.key
-          sudo chmod 600 ./packages/deployment/dist/deploy.key
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
         shell: bash
       - name: Generate deployment config
@@ -64,8 +55,13 @@ jobs:
       - id: print-deployment-link
         name: Print deployment link
         run: echo "link=$(yarn -s deployment print-link --branch-ref "origin/${{ github.head_ref }}" --domain "${{ vars.DOMAIN }}")" >> $GITHUB_OUTPUT
+      - uses: thollander/actions-comment-pull-request@v1.4.1
+        with:
+          message: |
+            :rocket: Deployment of this branch available [here](${{ steps.print-deployment-link.outputs.link }})
+          comment_includes: ':rocket: Deployment of this branch available'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # This action must remove environment. URL of this environment will take from util
   remove:
     if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' }}
     runs-on: ubuntu-latest
@@ -77,14 +73,14 @@ jobs:
         with:
           node-version: 18
           cache: yarn
+      - id: print-deployment-link
+        name: Print deployment link
+        run: echo "link=$(yarn -s deployment print-link --branch-ref "origin/${{ github.head_ref }}" --domain "${{ vars.DOMAIN }}")" >> $GITHUB_OUTPUT
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh/
-          mkdir -p ./packages/deployment/dist/
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ./deploy.key
           sudo chmod 600 ./deploy.key
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ./packages/deployment/dist/deploy.key
-          sudo chmod 600 ./packages/deployment/dist/deploy.key
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
       - name: Install dependencies
         run: yarn install --frozen-lockfile
