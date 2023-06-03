@@ -1,6 +1,9 @@
 name: Pull request
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     types:
       - opened
@@ -8,13 +11,9 @@ on:
       - closed
       - synchronize
 
-concurrency:
-  group: ${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   test:
-    if: false #${{ github.event_name == 'pull_request' && github.event.action == 'opened' || github.event.action == 'reopened' || github.event.action == 'synchronize' }}
+    if: ${{ !(github.event_name == 'pull_request' && github.event.action == 'closed') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -37,5 +36,7 @@ jobs:
   deployment:
     if: ${{ always() }}
     needs: test
-    uses: ./.github/workflows/deployments.yml
+    uses: ./.github/workflows/deploy.yml
     secrets: inherit
+    with:
+      testIsSuccess: ${{ needs.test.result == 'success' }}
