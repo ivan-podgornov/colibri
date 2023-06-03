@@ -1,0 +1,139 @@
+name: Deploy
+
+on:
+  workflow_call:
+    secrets:
+      HOST: { required: true }
+      USER: { required: true }
+      WORKING_PATH: { required: true }
+      DATABASE_USER: { required: true }
+      DATABASE_PASSWORD: { required: true }
+      DATABASE_HOST: { required: true }
+      DATABASE_PORT: { required: true }
+      SSH_PRIVATE_KEY: { required: true }
+      SSH_KNOWN_HOSTS: { required: true }
+    inputs:
+      testIsSuccess: { required: true, type: boolean }
+
+jobs:
+  setup:
+    if: github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ./deploy.key
+          sudo chmod 600 ./deploy.key
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+        shell: bash
+      - name: Generate deployment config
+        run: |
+          yarn deployment pre-pm2 \
+            --branch-ref "origin/${{ github.head_ref }}" \
+            --domain "${{ vars.DOMAIN }}" \
+            --host "${{ secrets.HOST }}" \
+            --repository "${{ github.server_url }}/${{ github.repository }}/" \
+            --working-path "${{ secrets.WORKING_PATH }}" \
+            --user "${{ secrets.USER }}" \
+            --database-user "${{ secrets.DATABASE_USER }}" \
+            --database-password "${{ secrets.DATABASE_PASSWORD }}" \
+            --database-host "${{ secrets.DATABASE_HOST }}" \
+            --database-port "${{ secrets.DATABASE_PORT }}"
+      - name: "Setup deployment on the remote server"
+        run: yarn pm2 deploy ./packages/deployment/dist/deployment.json branch setup
+
+  deploy:
+    # if this job run on pull request update or when pull request is created, deploy will be updated
+    #    only if tests and lints is ok.
+    # if this job run on pull request create, deploy will be updated only if tests and lints is ok
+    #    and create deploy job completed successfully.
+    if: |
+      (((github.event_name == 'pull_request' && github.event.action == 'synchronize') || (github.event_name == 'push' && github.ref_name == 'main')) && inputs.testIsSuccess && always())
+      || ((github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)) && inputs.testIsSuccess && needs.setup.result == 'success')
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ./deploy.key
+          sudo chmod 600 ./deploy.key
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+        shell: bash
+      - name: Generate deployment config
+        run: |
+          yarn deployment pre-pm2 \
+            --branch-ref "origin/${{ github.event_name == 'pull_request' && github.head_ref || 'main' }}" \
+            --domain "${{ vars.DOMAIN }}" \
+            --host "${{ secrets.HOST }}" \
+            --repository "${{ github.server_url }}/${{ github.repository }}/" \
+            --working-path "${{ secrets.WORKING_PATH }}" \
+            --user "${{ secrets.USER }}" \
+            --database-user "${{ secrets.DATABASE_USER }}" \
+            --database-password "${{ secrets.DATABASE_PASSWORD }}" \
+            --database-host "${{ secrets.DATABASE_HOST }}" \
+            --database-port "${{ secrets.DATABASE_PORT }}"
+      - name: "Deploy branch to the remote server"
+        run: yarn pm2 deploy ./packages/deployment/dist/deployment.json branch
+      - id: print-deployment-link
+        name: Print deployment link
+        run: echo "link=$(yarn -s deployment print-link --branch-ref "origin/${{ github.head_ref }}" --domain "${{ vars.DOMAIN }}")" >> $GITHUB_OUTPUT
+      - if: github.event_name == 'pull_request'
+        uses: thollander/actions-comment-pull-request@v1.4.1
+        with:
+          message: |
+            :rocket: Deployment of this branch available [here](${{ steps.print-deployment-link.outputs.link }})
+          comment_includes: ':rocket: Deployment of this branch available'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  remove:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+      - id: print-deployment-link
+        name: Print deployment link
+        run: echo "link=$(yarn -s deployment print-link --branch-ref "origin/${{ github.head_ref }}" --domain "${{ vars.DOMAIN }}")" >> $GITHUB_OUTPUT
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ./deploy.key
+          sudo chmod 600 ./deploy.key
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Generate deployment removing config
+        run: |
+          yarn deployment remove \
+            --branch-ref "origin/${{ github.head_ref }}" \
+            --host ${{ secrets.HOST }} \
+            --repository "${{ github.server_url }}/${{ github.repository }}/" \
+            --working-path "${{ secrets.WORKING_PATH }}" \
+            --user "${{ secrets.USER }}"
+      - name: "Remove branch' deployment on the remote server"
+        run: yarn pm2 deploy ./packages/deployment/dist/remove-deployment.json remove

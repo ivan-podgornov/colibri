@@ -27,6 +27,7 @@ describe('pre-pm2', () => {
     expect(config).toStrictEqual({
       deploy: {
         branch: {
+          key: 'deploy.key',
           user: 'pm2',
           host: '192.168.0.1',
           path: '/home/pm2/repository/issue-28',

@@ -1,9 +1,19 @@
 name: Pull request
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - closed
+      - synchronize
 
 jobs:
   test:
+    if: ${{ !(github.event_name == 'pull_request' && github.event.action == 'closed') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -13,11 +23,21 @@ jobs:
         with:
           node-version: 18
           cache: yarn
-      - run: yarn install --frozen-lockfile
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
         shell: bash
       - name: Lint code
         run: npm run lint
-      - name: Validate PR commits with commitlint
+      - if: github.event_name == 'pull_request'
+        name: Validate PR commits with commitlint
         run: npx commitlint --from ${{ github.event.pull_request.head.sha }}~${{ github.event.pull_request.commits }} --to ${{ github.event.pull_request.head.sha }} --verbose
       - name: Run tests
         run: npm run test
+
+  deployment:
+    if: ${{ always() }}
+    needs: test
+    uses: ./.github/workflows/deploy.yml
+    secrets: inherit
+    with:
+      testIsSuccess: ${{ needs.test.result == 'success' }}

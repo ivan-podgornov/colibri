@@ -1,9 +1,3 @@
-export interface PortsMap {
-  components: number;
-  panel: number;
-  api: number;
-}
-
 export interface PreDeployOptions {
   /** The ref of the branch that is being published */
   branchRef: string;
@@ -15,5 +9,3 @@ export interface PreDeployOptions {
    */
   databaseUrl: string;
 }
-
-export type HostsMap = Record<keyof PortsMap, string>;

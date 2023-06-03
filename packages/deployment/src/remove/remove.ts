@@ -23,6 +23,7 @@ function getDeploymentConfig(options: RemoveOptions): DeploymentConfig {
   const branchName = getBranchName(options.branchRef);
 
   return {
+    key: 'deploy.key',
     user: options.user,
     host: options.host,
     path: getPath(options.branchRef, options.workingPath),

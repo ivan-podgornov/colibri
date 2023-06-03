@@ -4,7 +4,8 @@ import { execSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import ejs from 'ejs';
-import type { HostsMap, PortsMap } from '../pre-deploy/pre-deploy.types';
+
+import type { HostsMap, PortsMap } from '../types';
 
 const ecosystemPath = path.resolve(__dirname, '../../dist/ecosystem.json');
 const nginxConfPath = path.resolve(__dirname, '../../dist/nginx.conf');

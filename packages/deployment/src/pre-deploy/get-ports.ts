@@ -1,6 +1,7 @@
 import { findFreePorts } from 'find-free-ports';
 import { getBranchName } from '../utils';
-import type { PreDeployOptions, PortsMap } from './pre-deploy.types';
+import type { PortsMap } from '../types';
+import type { PreDeployOptions } from './pre-deploy.types';
 
 export const DEFAULT_PORTS = {
   components: 3001,

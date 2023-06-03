@@ -2,15 +2,15 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import ejs from 'ejs';
 
-import { mkdirIfNotExists } from '../utils';
+import { getHosts, mkdirIfNotExists } from '../utils';
+import type { HostsMap, PortsMap } from '../types';
 import { getPorts } from './get-ports';
-import { getHosts } from './get-hosts';
-import type { HostsMap, PortsMap, PreDeployOptions } from './pre-deploy.types';
+import type { PreDeployOptions } from './pre-deploy.types';
 
 /** Creates pm2 config for applications and nginx.conf for specified branch */
 export async function preDeploy(options: PreDeployOptions) {
   const ports = await getPorts(options);
-  const hosts = getHosts(options);
+  const hosts = getHosts(options.branchRef, options.domain);
 
   const [pm2Config, nginxConf] = await Promise.all([
     getPm2Config(options, ports),
