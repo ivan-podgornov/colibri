@@ -13,9 +13,14 @@ on:
       SSH_PRIVATE_KEY: { required: true }
       SSH_KNOWN_HOSTS: { required: true }
 
+env:
+  PR_DEPLOY_CREATE: ${{ github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action) }}
+  PR_DEPLOY_UPDATE: ${{ github.event_name == 'pull_request' && github.event.action == 'synchronize' }}
+  PR_DEPLOY_REMOVE: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' }}
+
 jobs:
   deploy:
-    if: ${{ github.event_name == 'pull_request' && github.event.action == 'opened' || github.event.action == 'reopened' || github.event.action == 'synchronize' }}
+    if: $PR_DEPLOY_CREATE || $PR_DEPLOY_UPDATE
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
