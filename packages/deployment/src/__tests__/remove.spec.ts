@@ -10,7 +10,7 @@ describe('remove', () => {
   beforeAll(async () => {
     await fs.rm(removeDeploymentPath, { force: true, recursive: true });
     const command =
-      'yarn deployment remove --branch-ref origin/issue-34 --host "192.168.0.1" ' +
+      'TEST=1 yarn deployment remove --branch-ref origin/issue-34 --host "192.168.0.1" ' +
       '--repository "https://github.com/user/repository" --working-path "/home/pm2/repository" ' +
       '--user pm2';
 

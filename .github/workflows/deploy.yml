@@ -15,9 +15,6 @@ on:
     inputs:
       testIsSuccess: { required: true, type: boolean }
 
-permissions:
-  deployments: write
-
 jobs:
   setup:
     if: github.event_name == 'pull_request' && contains(fromJSON('["opened", "reopened"]'), github.event.action)
@@ -66,7 +63,7 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.event_name == 'pull_request' && github.head_ref || 'main' }}
+      name: ${{ github.event_name == 'pull_request' && github.head_ref || 'production' }}
       url: ${{ steps.print-deployment-link.outputs.link }}
     steps:
       - uses: actions/checkout@v3
@@ -86,8 +83,6 @@ jobs:
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
         shell: bash
       - name: Generate deployment config
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           yarn deployment pre-pm2 \
             --branch-ref "origin/${{ github.event_name == 'pull_request' && github.head_ref || 'main' }}" \
@@ -117,9 +112,6 @@ jobs:
         with:
           node-version: 18
           cache: yarn
-      - id: print-deployment-link
-        name: Print deployment link
-        run: echo "link=$(yarn -s deployment print-link --branch-ref "origin/${{ github.head_ref }}" --domain "${{ vars.DOMAIN }}")" >> $GITHUB_OUTPUT
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh/
@@ -128,7 +120,9 @@ jobs:
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Generate deployment removing config
+      - name: Remove environment and generate deployment removing config
+        env:
+          COLIBRI_GITHUB_TOKEN: ${{ secrets.COLIBRI_GITHUB_TOKEN }}
         run: |
           yarn deployment remove \
             --branch-ref "origin/${{ github.head_ref }}" \
