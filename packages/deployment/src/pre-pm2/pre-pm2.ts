@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+
 import { getPath, mkdirIfNotExists } from '../utils';
 import { getDatabaseUrl } from './get-database-url';
 import type { DeploymentConfig, PrePm2Options } from './pre-pm2.types';

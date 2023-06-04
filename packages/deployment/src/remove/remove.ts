@@ -1,10 +1,13 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { Octokit } from '@octokit/core';
 
 import { getBranchName, getPath, mkdirIfNotExists } from '../utils';
 import type { DeploymentConfig, RemoveOptions } from './remove.types';
 
 export async function remove(options: RemoveOptions) {
+  await removeGithubEnvironment(options);
+
   const config = {
     deploy: {
       remove: getDeploymentConfig(options),
@@ -32,4 +35,22 @@ function getDeploymentConfig(options: RemoveOptions): DeploymentConfig {
     // it executes on path: ${path}/current
     'post-deploy': `PM2_HOME=../source/.pm2 pm2 kill && cd ../../ && rm -rf ./${branchName}/ && nginx -s reload`,
   };
+}
+
+async function removeGithubEnvironment(options: RemoveOptions) {
+  if (process.env.TEST) {
+    // We run deployment remove in tests with child process exec function
+    // So we can't mock octokit in tests and path TEST variable.
+    return;
+  }
+
+  const [owner, repo] = new URL(options.repository).pathname.slice(1).split('/');
+  const octokit = new Octokit({ auth: process.env.COLIBRI_GITHUB_TOKEN });
+
+  await octokit.request('DELETE /repos/{owner}/{repo}/environments/{environment_name}', {
+    owner,
+    repo,
+    environment_name: getBranchName(options.branchRef),
+    headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+  });
 }

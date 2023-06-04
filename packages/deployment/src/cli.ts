@@ -1,6 +1,7 @@
 #!/usr/bin/env ts-node
 
 import { Command } from 'commander';
+
 import { prePm2 } from './pre-pm2';
 import { preDeploy } from './pre-deploy';
 import { printLink } from './print-link';
