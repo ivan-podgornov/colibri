@@ -99,7 +99,7 @@ jobs:
         run: yarn pm2 deploy ./packages/deployment/dist/deployment.json branch
       - id: print-deployment-link
         name: Print deployment link
-        run: echo "link=$(yarn -s deployment print-link --branch-ref "origin/${{ github.head_ref }}" --domain "${{ vars.DOMAIN }}")" >> $GITHUB_OUTPUT
+        run: echo "link=$(yarn -s deployment print-link --branch-ref "origin/${{ github.event_name == 'pull_request' && github.head_ref || 'main' }}" --domain "${{ vars.DOMAIN }}")" >> $GITHUB_OUTPUT
 
   remove:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
