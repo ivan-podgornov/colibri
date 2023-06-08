@@ -12,6 +12,10 @@ export async function loadComponent(options: LoadingOptions): Promise<ComponentT
   const path = typeof window === 'undefined' ? '/server/remoteEntry.js' : '/client/remoteEntry.js';
   const url = new URL(path, componentData.src).toString();
 
+  // @ts-expect-error this module must create new chunk. This is important for remote components
+  // eslint-disable-next-line import/no-unresolved
+  import('fake');
+
   __webpack_init_sharing__('default');
 
   const container =
