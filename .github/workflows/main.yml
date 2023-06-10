@@ -1,4 +1,4 @@
-name: Pull request
+name: Main workflow
 
 on:
   push:
@@ -34,10 +34,16 @@ jobs:
       - name: Run tests
         run: npm run test
 
-  deployment:
+  deploy:
     if: ${{ always() }}
     needs: test
     uses: ./.github/workflows/deploy.yml
     secrets: inherit
     with:
       testIsSuccess: ${{ needs.test.result == 'success' }}
+
+  deploy-components:
+    if: ${{ always() }}
+    needs: test
+    uses: ./.github/workflows/deploy-components.yml
+    secrets: inherit

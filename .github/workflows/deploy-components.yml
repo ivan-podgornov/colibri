@@ -1,0 +1,37 @@
+name: Deploy components to Github Pages
+
+on: workflow_call
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: ${{ github.event_name == 'pull_request' && format('github-pages-{0}', github.head_ref) || 'github-pages' }}
+      url: ${{ format('https://{0}.github.io/{1}/{2}/', github.event.repository.owner.login, github.event.repository.name, github.event_name == 'pull_request' && github.head_ref || github.event.repository.default_branch) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+      - name: Set remote url
+        run: git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Build components
+        run: yarn workspace @colibri/components build
+      - name: Upload artifacts
+        run: |
+          yarn gh-pages \
+            --branch build \
+            --dist ./packages/components/dist/ \
+            --dest ${{ github.event_name == 'pull_request' && github.head_ref || github.event.repository.default_branch }} \
+            --remove ${{ github.event_name == 'pull_request' && github.head_ref || github.event.repository.default_branch }} \
+            --user "github-actions-bot <support+actions@github.com>"
