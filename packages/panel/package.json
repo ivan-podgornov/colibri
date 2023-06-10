@@ -1,0 +1,24 @@
+{
+  "name": "@colibri/panel",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "start": "next dev",
+    "prod": "next build && next start"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.0.1",
+    "@module-federation/utilities": "^1.7.0",
+    "antd": "^5.4.2",
+    "next": "^13.2.4",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@module-federation/node": "^0.14.0",
+    "@types/react": "18.2.6",
+    "@types/webpack-env": "^1.18.0",
+    "webpack": "^5.77.0"
+  }
+}

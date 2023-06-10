@@ -1,0 +1,44 @@
+{
+  "env": {
+    "es2021": true,
+    "jest/globals": true,
+    "node": true
+  },
+  "extends": [
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "project": ["./tsconfig.json", "./packages/*/tsconfig.json"],
+    "sourceType": "module"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
+  "rules": {
+    "import/no-default-export": "error",
+    // Because proptypes are more convenient to import as default
+    "import/no-named-as-default-member": "off"
+  },
+  "overrides": [
+    {
+      "files": ["./packages/panel/src/pages/**/*", "commitlint.config.ts", "jest.config.ts"],
+      "rules": {
+        // Because next pages, commitlint and ts-jest config must be exported as default
+        "import/no-default-export": "off"
+      }
+    },
+    {
+      "files": ["*.spec.ts"],
+      "plugins": ["jest"],
+      "extends": ["plugin:jest/all"]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+node_modules
+.DS_Store
+.pm2
+pgdata
