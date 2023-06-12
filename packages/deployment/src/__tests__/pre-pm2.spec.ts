@@ -36,7 +36,7 @@ describe('pre-pm2', () => {
           'pre-deploy':
             "yarn install --frozen-lockfile && yarn deployment pre-deploy --branch-ref='origin/issue-28' --domain='my-domain.com' --database-url='postgresql://dbuser:dbpassword@127.0.0.1:5432/issue-28' && nginx -t",
           'post-deploy':
-            'PM2_HOME=./.pm2/ pm2 startOrRestart ./packages/deployment/dist/ecosystem.json && nginx -s reload',
+            'pm2 startOrRestart ./packages/deployment/dist/ecosystem.json --namespace issue-28 && nginx -s reload',
         },
       },
     });

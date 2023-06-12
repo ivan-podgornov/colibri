@@ -33,7 +33,7 @@ function getDeploymentConfig(options: RemoveOptions): DeploymentConfig {
     ref: options.branchRef,
     repo: options.repository,
     // it executes on path: ${path}/current
-    'post-deploy': `PM2_HOME=../source/.pm2 pm2 kill && cd ../../ && rm -rf ./${branchName}/ && nginx -s reload`,
+    'post-deploy': `pm2 delete ../source/packages/deployment/dist/ecosystem.json --namespace ${branchName} && cd ../../ && rm -rf ./${branchName}/ && nginx -s reload`,
   };
 }
 

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { getPath, mkdirIfNotExists } from '../utils';
+import { getBranchName, getPath, mkdirIfNotExists } from '../utils';
 import { getDatabaseUrl } from './get-database-url';
 import type { DeploymentConfig, PrePm2Options } from './pre-pm2.types';
 
@@ -22,6 +22,7 @@ export async function prePm2(options: PrePm2Options) {
 /** Returns deployment config for pm2 */
 function getDeploymentConfig(options: PrePm2Options): DeploymentConfig {
   const databaseUrl = getDatabaseUrl(options);
+  const branchName = getBranchName(options.branchRef);
 
   return {
     key: 'deploy.key',
@@ -31,7 +32,6 @@ function getDeploymentConfig(options: PrePm2Options): DeploymentConfig {
     ref: options.branchRef,
     repo: options.repository,
     'pre-deploy': `yarn install --frozen-lockfile && yarn deployment pre-deploy --branch-ref='${options.branchRef}' --domain='${options.domain}' --database-url='${databaseUrl}' && nginx -t`,
-    'post-deploy':
-      'PM2_HOME=./.pm2/ pm2 startOrRestart ./packages/deployment/dist/ecosystem.json && nginx -s reload',
+    'post-deploy': `pm2 startOrRestart ./packages/deployment/dist/ecosystem.json --namespace ${branchName} && nginx -s reload`,
   };
 }

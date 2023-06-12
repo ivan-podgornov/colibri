@@ -33,7 +33,7 @@ describe('remove', () => {
           ref: 'origin/issue-34',
           repo: 'https://github.com/user/repository',
           'post-deploy':
-            'PM2_HOME=../source/.pm2 pm2 kill && cd ../../ && rm -rf ./issue-34/ && nginx -s reload',
+            'pm2 delete ../source/packages/deployment/dist/ecosystem.json --namespace issue-34 && cd ../../ && rm -rf ./issue-34/ && nginx -s reload',
         },
       },
     });
