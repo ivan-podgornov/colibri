@@ -1,6 +1,12 @@
 name: Deploy components to Github Pages
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      # Do not deploy if tests failed
+      testIsSuccess:
+        default: true
+        type: boolean
 
 concurrency:
   group: "pages"
@@ -8,6 +14,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: (((github.event_name == 'pull_request' && github.event.action == 'synchronize') || (github.event_name == 'push' && github.ref_name == 'main')) && inputs.testIsSuccess && always())
     environment:
       name: ${{ github.event_name == 'pull_request' && format('github-pages-{0}', github.head_ref) || 'github-pages' }}
       url: ${{ format('https://{0}.github.io/{1}/{2}/', github.event.repository.owner.login, github.event.repository.name, github.event_name == 'pull_request' && github.head_ref || github.event.repository.default_branch) }}
@@ -35,3 +42,34 @@ jobs:
             --dest ${{ github.event_name == 'pull_request' && github.head_ref || github.event.repository.default_branch }} \
             --remove ${{ github.event_name == 'pull_request' && github.head_ref || github.event.repository.default_branch }} \
             --user "github-actions-bot <support+actions@github.com>"
+
+  remove:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Remove folder with branch from build branch
+        run: |
+          git config --global user.email "github-actions-bot"
+          git config --global user.name "support+actions@github.com"
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          git fetch origin build
+          git switch build
+          git rm ${{ github.head_ref }} -r
+          git commit -a -n -m "remove ${{ github.event.pull_request.head.ref }}"
+          git push origin build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Remove environment
+        env:
+          OWNER: ${{ github.event.repository.owner.login }}
+          REPO: ${{ github.event.repository.name }}
+          ENVIRONMENT_NAME: ${{ format('github-pages-{0}', github.head_ref) }}
+        run: |
+          curl -L \
+            -X DELETE \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.COLIBRI_GITHUB_TOKEN }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${OWNER}/${REPO}/environments/${ENVIRONMENT_NAME}

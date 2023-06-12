@@ -1,4 +1,4 @@
-name: Main workflow
+name: ci
 
 on:
   push:
@@ -47,3 +47,5 @@ jobs:
     needs: test
     uses: ./.github/workflows/deploy-components.yml
     secrets: inherit
+    with:
+      testIsSuccess: ${{ needs.test.result == 'success' }}
