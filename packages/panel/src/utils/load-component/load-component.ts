@@ -9,8 +9,11 @@ declare const __webpack_share_scopes__: Record<string, string>;
 /** Loads remote component and returns that one */
 export async function loadComponent(options: LoadingOptions): Promise<ComponentType> {
   const { componentData } = options;
-  const path = typeof window === 'undefined' ? '/server/remoteEntry.js' : '/client/remoteEntry.js';
-  const url = new URL(path, componentData.src).toString();
+  const path = typeof window === 'undefined' ? 'server/remoteEntry.js' : 'client/remoteEntry.js';
+  const srcWithTrailingSlash = componentData.src.endsWith('/')
+    ? componentData.src
+    : `${componentData.src}/`;
+  const url = `${srcWithTrailingSlash}${path}`;
 
   // @ts-expect-error this module must create new chunk. This is important for remote components
   // eslint-disable-next-line import/no-unresolved
@@ -22,9 +25,9 @@ export async function loadComponent(options: LoadingOptions): Promise<ComponentT
     typeof window === 'undefined'
       ? await new Promise<ModuleFederationContainer>((resolve) =>
           // @ts-expect-error @module-federation/utilities breaks types here
-          __webpack_require__.l(url, resolve, 'colibri_components')
+          __webpack_require__.l(url, resolve, componentData.packageName)
         )
-      : await injectScript({ url, global: 'colibri_components' });
+      : await injectScript({ url, global: componentData.packageName });
 
   // @ts-expect-error everything ok here
   await container.init(__webpack_share_scopes__.default);
