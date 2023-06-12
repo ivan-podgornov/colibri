@@ -30,8 +30,8 @@ function getDeploymentConfig(options: PrePm2Options): DeploymentConfig {
     path: getPath(options.branchRef, options.workingPath),
     ref: options.branchRef,
     repo: options.repository,
-    'pre-deploy': `yarn install --frozen-lockfile && yarn deployment pre-deploy --branch-ref='${options.branchRef}' --domain='${options.domain}' --database-url='${databaseUrl}' && nginx -t`,
+    'pre-deploy': `yarn install --frozen-lockfile --ignore-scripts && yarn deployment pre-deploy --branch-ref='${options.branchRef}' --domain='${options.domain}' --database-url='${databaseUrl}' && nginx -t`,
     'post-deploy':
-      'PM2_HOME=./.pm2/ pm2 startOrRestart ./packages/deployment/dist/ecosystem.json && nginx -s reload',
+      'PM2_HOME=./.pm2/ pm2 startOrRestart ./packages/deployment/dist/ecosystem.json --update-env && nginx -s reload',
   };
 }
